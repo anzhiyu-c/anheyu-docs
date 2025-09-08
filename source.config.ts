@@ -1,19 +1,14 @@
-import {
-  defineConfig,
-  defineDocs,
-  frontmatterSchema,
-  metaSchema,
-} from 'fumadocs-mdx/config';
+/*
+ * @Description:
+ * @Author: 安知鱼
+ * @Date: 2025-09-08 17:42:53
+ * @LastEditTime: 2025-09-08 18:35:25
+ * @LastEditors: 安知鱼
+ */
+import { defineConfig, defineDocs } from "fumadocs-mdx/config";
 
-// You can customise Zod schemas for frontmatter and `meta.json` here
-// see https://fumadocs.dev/docs/mdx/collections#define-docs
 export const docs = defineDocs({
-  docs: {
-    schema: frontmatterSchema,
-  },
-  meta: {
-    schema: metaSchema,
-  },
+  // No custom schema, use default
 });
 
 export default defineConfig({

@@ -1,4 +1,12 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+/*
+ * @Description:
+ * @Author: 安知鱼
+ * @Date: 2025-09-08 17:42:53
+ * @LastEditTime: 2025-09-08 18:24:21
+ * @LastEditors: 安知鱼
+ */
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
+import Image from "next/image";
 
 /**
  * Shared layout configurations
@@ -12,19 +20,18 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: (
         <>
-          <svg
-            width="24"
-            height="24"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="Logo"
-          >
-            <circle cx={12} cy={12} r={12} fill="currentColor" />
-          </svg>
-          My App
+          <Image src="/logo.svg" alt="Anheyu Logo" width={24} height={24} />
+          Anheyu
         </>
       ),
     },
     // see https://fumadocs.dev/docs/ui/navigation/links
-    links: [],
+    links: [
+      {
+        text: "Demo",
+        url: "https://demo.anheyu.com/",
+        external: true,
+      },
+    ],
   };
 }
