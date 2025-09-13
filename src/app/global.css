@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: 安知鱼
  * @Date: 2025-09-08 17:42:53
- * @LastEditTime: 2025-09-13 18:56:13
+ * @LastEditTime: 2025-09-13 19:08:11
  * @LastEditors: 安知鱼
  */
 @import "tailwindcss";
@@ -286,4 +286,12 @@ html.dark {
   line-height: 1.5;
   transform: translateY(-1px);
   display: inline-block;
+}
+
+body {
+  background-color: var(--anzhiyu-white);
+}
+
+html.dark body {
+  background-color: var(--anzhiyu-background);
 }
