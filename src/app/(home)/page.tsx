@@ -57,13 +57,13 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap items-center justify-center gap-4 mt-8 md:justify-start">
               <Link
-                href="/docs"
+                href="/docs/getting-started"
                 className="px-5 py-2.5 text-base font-semibold text-white transition bg-blue-500 rounded-lg shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               >
                 快速上手
               </Link>
               <Link
-                href="/intro"
+                href="/docs"
                 className="px-5 py-2.5 text-base font-semibold transition bg-gray-100 rounded-lg shadow-sm text-slate-700 hover:bg-gray-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
               >
                 简介

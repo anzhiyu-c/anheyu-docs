@@ -4,7 +4,7 @@ description: 这一章节将应用的基本信息展示给你
 index: 0
 ---
 
-<p align="center">
+<div className="flex flex-col items-center text-center">
   <a href="https://github.com/anzhiyu-c/anheyu-app" target="_blank" title="访问项目仓库">
     <img
       src="https://upload-bbs.miyoushe.com/upload/2025/08/27/125766904/445bc304fe1a5edf8c0250beac0731b5_953439680145318785.png"
@@ -14,13 +14,13 @@ index: 0
       style={{ width: "auto" }}
     />
   </a>
-</p>
 
-<p align="center">
-  <strong>一个现代化的内容管理与分享平台</strong>
-</p>
+  <p className="mt-4">
+    <strong>一个现代化的内容管理与分享平台</strong>
+  </p>
+</div>
 
-<div align="center" className="flex flex-col items-center">
+<div className="flex flex-col items-center text-center">
 
   <div className="flex gap-2">
     
@@ -73,7 +73,11 @@ index: 0
   </div>
 </div>
 
-如果能给我一个 **star**，那将是对我莫大的鼓励。使用这个应用之前，你应该明白它是一个完全独立的应用，需要`服务器`才能进行搭建。推荐使用 Docker 部署，能够极大的减少环境配置带来的问题。
+如果能给我一个 [star](https://github.com/anzhiyu-c/anheyu-app)，那将是对我莫大的鼓励。使用这个应用之前，你应该明白它是一个完全独立的应用，需要`服务器`才能进行搭建。推荐使用 Docker 部署，能够极大的减少环境配置带来的问题。
+
+[Anheyu](https://github.com/anzhiyu-c/anheyu-app) 可以让你快速的搭建一个属于自己的内容网站，你可以用它来记录你的生活、学习、工作、娱乐等任意内容，并且随时查看，它支持公网部署，也支持本地私有部署。
+
+如果你有开发经验，或者你是一名想学习前端的同学，那么这个项目非常的适合你进行学习，你可以学习 Vue3、TypeScript 等技术来自定义专属于你的主题，如果你愿意，也可以通过邮箱联系我提交到主题商城，我会将其集成到项目中，通过审核后，所有的 Anheyu 用户都可以自由下载并使用您的主题。
 
 由 [安知鱼](https://github.com/anzhiyu-c) 负责开发与维护。
 
@@ -85,15 +89,11 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ## 🚀 快速开始
 
-### 系统要求
+`安和鱼应用系统`是一个基于 **[Go](https://go.dev/) + [Vue3](https://vuejs.org/)** 构建的现代化内容管理与分享平台。系统采用前后端分离架构，后端使用 Go 语言提供高性能的 API 服务。
 
-- **Go** >= 1.21
-- **Node.js** >= 20.19.4
-- **MySQL** >= 8.0 或 **PostgreSQL** >= 12.0 或 **SQLite** >= 3.35
-
-## 🌟 系统简介
-
-`安和鱼应用系统`是一个基于 **Go + Vue3** 构建的现代化内容管理与分享平台。系统采用前后端分离架构，后端使用 Go 语言提供高性能的 API 服务，前端使用 Vue3 + Element Plus 构建美观的用户界面。
+<Callout type="info" title="系统要求">
+  在开始之前，请确保您的系统满足以下要求： 内存大于等于512MB，硬盘大于等于1GB，CPU大于等于1核。
+</Callout>
 
 ## ✨ 主要功能
 
@@ -134,27 +134,26 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ## 🏗️ 技术架构
 
-### 前端技术栈
+<Accordions type="single">
+  <Accordion title="为什么要使用 GO作为后端？而不是Java或者 Rust">
+    - Go 语言的性能和效率非常出色，适合构建高性能的 API 服务 - 运行时仅需`10MB`左右，非常轻量级 -
+    编译速度非常快，支持多平台编译，支持静态编译，开箱即用 - 支持多线程，支持并发，支持异步，支持协程 -
+    Java内存占用过大，Go有许多好用的标准库，Rust相对较少，当我需要一个功能的时候，我可以使用Go快速实现，Go的性能表现已经足够。
+  </Accordion>
+  <Accordion title="为什么选择使用Vue3作为前端？而不是React/Nuxt.js/Next.js">
+ - Vue3的性能和效率非常出色，Vue3的生态系统非常成熟，有很多优秀的库和工具可以使用。
+ - 我需要写大量的动画，我不喜欢写内链样式，Vue3的 Composition API 非常适合我，但是React的CSS写的我很累，虽然同样支持CSS in JS，但是React的CSS in JS写的我很累。
+ - Nuxt与Next等最大的优势是支持SSR，但是我的后端已经使用Go的静态嵌入实现了SSR，已经有了非常优秀的 SEO 能力。
+ - 为什么官网却使用Next.js？因为官网需要非常优秀的 SEO 能力，并且系统不大，Next.js的 SEO 能力非常出色。
+ - 我希望能有更多的人能够通过本项目学习到编程开发，Vue更易上手，这有利于后续集成主题开发者以及生态。
+  </Accordion>
 
-- **Vue 3** - 渐进式 JavaScript 框架
-- **Element Plus** - 基于 Vue 3 的组件库
-- **TypeScript** - 类型安全的 JavaScript 超集
-- **Vite** - 现代化的前端构建工具
-- **Pinia** - Vue 官方状态管理库
-
-### 后端技术栈
-
-- **Go** - 高性能编程语言
-- **Gin** - 轻量级 Web 框架
-- **Ent** - Facebook 开源的实体框架
-- **JWT** - 身份验证和授权
-- **Swagger** - API 文档生成
-
-### 数据库支持
-
-- **MySQL** - 关系型数据库
-- **PostgreSQL** - 开源对象关系数据库（推荐）
-- **SQLite** - 轻量级嵌入式数据库
+  <Accordion title="支持哪些数据库？">
+ - **MySQL** - 关系型数据库
+ - **PostgreSQL** - 开源对象关系数据库（推荐）
+ - **SQLite** - 轻量级嵌入式数据库
+  </Accordion>
+</Accordions>
 
 ### 架构模式
 
@@ -164,15 +163,23 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ## 🤝 贡献指南
 
+<Callout type="warn" title="注意事项">
+  在提交 Pull Request 之前，请确保所有测试都通过，并遵循项目的代码规范。
+</Callout>
+
 欢迎提交 Issue 和 Pull Request 来帮助改进这个项目！
 
 ## 📄 许可证
 
 本项目采用 [GPL-3.0 license](https://github.com/anzhiyu-c/anheyu-app?tab=GPL-3.0-1-ov-file#readme) 许可证。
 
-## 👨‍💻 作者
+## 👨‍💻 贡献者
 
-**安知鱼** - 项目维护者
+[![contributors](https://opencollective.com/anheyu-app-frontend/contributors.svg?width=890&button=false)](https://github.com/anzhiyu-c/anheyu-app-frontend)
+
+**[安知鱼](https://github.com/anzhiyu-c)** - 项目维护者
+
+**[张洪 Heo](https://github.com/zhheo)** - UI/UX
 
 ## 🙏 致谢
 
@@ -182,4 +189,10 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 QQ 群组：[464636182](https://jq.qq.com/?_wv=1027&k=v7NK7ELr)
 
-![QQ群组](https://upload-bbs.miyoushe.com/upload/2025/07/09/125766904/1e8ea817c197fb98e4dbd9ed2500d923_6382092418395407285.webp)
+<div className="text-center">
+  <img
+    src="https://upload-bbs.miyoushe.com/upload/2025/07/09/125766904/1e8ea817c197fb98e4dbd9ed2500d923_6382092418395407285.webp"
+    alt="QQ群组"
+    className="inline-block"
+  />
+</div>
