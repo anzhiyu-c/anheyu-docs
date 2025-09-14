@@ -3,6 +3,962 @@ title: 主题定制
 description: 学习如何定制 Anheyu 的主题和外观
 ---
 
-# 主题定制
+Anheyu 提供了强大的主题定制功能，支持完全自定义前端界面，让您可以创建独特的视觉体验和用户交互。
 
-Anheyu 提供了强大的主题定制功能，让您可以创建独特的视觉体验。
+## 工作原理
+
+Anheyu 应用在启动时会按照以下优先级加载前端资源：
+
+1. **外部静态资源模式（推荐用于自定义）**：检查应用启动文件同目录下的 `static` 文件夹
+2. **内置资源模式**：使用应用内嵌的默认前端资源
+
+当检测到外部 `static` 目录存在时，系统会自动切换到外部静态资源模式，支持完整的 SSR（服务端渲染）功能。
+
+<Callout type="info" title="自定义前端的优势">
+
+- 🎨 完全控制界面设计和用户体验
+- 🚀 支持服务端渲染（SSR），提升 SEO 效果
+- 🔧 可以添加自定义功能和组件
+- 📱 响应式设计，适配各种设备
+- ⚡ 基于 Vue 3 + Vite，开发体验优秀
+
+</Callout>
+
+## 前置要求
+
+在开始自定义主题之前，请确保您的开发环境已安装：
+
+- **Node.js** >= 18.0 ([安装指南](https://nodejs.org/))
+- **pnpm** >= 10.0 ([安装指南](https://pnpm.io/installation))
+- **Git** ([安装指南](https://git-scm.com/downloads))
+
+### 步骤 1：获取前端源码
+
+从 GitHub 克隆安和鱼应用的前端仓库：
+
+```bash
+# 克隆前端仓库
+git clone https://github.com/anzhiyu-c/anheyu-app-frontend.git
+
+# 进入项目目录
+cd anheyu-app-frontend
+```
+
+### 步骤 2：安装依赖
+
+使用 pnpm 安装项目依赖：
+
+```bash
+# 安装依赖
+pnpm install
+```
+
+<Callout type="info" title="为什么使用 pnpm？">
+  pnpm 相比 npm/yarn 具有更快的安装速度、更少的磁盘占用，并且与项目的开发环境保持一致。
+</Callout>
+
+### 步骤 3：开发环境运行
+
+在开发过程中，您可以启动本地开发服务器进行实时预览：
+
+```bash
+# 启动开发服务器
+pnpm run dev
+```
+
+开发服务器启动后，会在 `http://localhost:8848` 提供预览服务。
+
+<Callout type="warn" title="开发环境注意事项">
+  开发环境需要连接到运行中的 Anheyu 后端服务（通常是 `http://localhost:8091`），确保后端服务正常运行。
+  如果你已经部署过了应用并且有线上地址的话，你可以在 `src/utils/http/config.ts` 中修改 `baseUrlApi` 的值为你的线上地址。
+  
+  ```diff
+  let baseUrlApi;
+  // 因为使用了代理，此处不再使用绝对路径，否则可能会导致文件夹下载失败
+  if (process.env.NODE_ENV === "production") {
+    baseUrlApi = (url: string) => {
+      if (url.startsWith("/")) {
+        return `/api${url}`;
+      } else {
+        return `/api/${url}`;
+      }
+    };
+  } else {
+    baseUrlApi = (url: string) => {
+      if (url.startsWith("/")) {
+  -      return `/api/${url}`;
+  +      return `https://anheyu.com/api/${url}`;
+      } else {
+  -      return `/api/${url}`;
+  +      return `https://anheyu.com/api/${url}`;
+      }
+    };
+  }
+  export { baseUrlApi };
+  ```
+
+</Callout>
+
+### 步骤 4：自定义修改
+
+现在您可以根据需求修改前端代码：
+
+#### 主要目录结构
+
+<Files>
+  <Folder name="anheyu-app-frontend" defaultOpen>
+    <Folder name="src" defaultOpen>
+      <Folder name="components">
+        <File name="..." icon="📁" />
+      </Folder>
+      <Folder name="views">
+        <File name="..." icon="📁" />
+      </Folder>
+      <Folder name="assets">
+        <File name="..." icon="📁" />
+      </Folder>
+      <Folder name="styles">
+        <File name="..." icon="📁" />
+      </Folder>
+      <Folder name="utils">
+        <File name="..." icon="📁" />
+      </Folder>
+      <File name="main.ts" icon="🚀" />
+    </Folder>
+    <Folder name="dist">
+      <File name="index.html" />
+      <File name="favicon.ico" />
+      <Folder name="static">
+        <Folder name="css">
+          <File name="..." />
+        </Folder>
+        <Folder name="js">
+          <File name="..." />
+        </Folder>
+        <File name="..." />
+      </Folder>
+    </Folder>
+    <Folder name="public">
+      <File name="..." />
+    </Folder>
+    <File name="index.html" icon="🌐" />
+    <File name="vite.config.ts" icon="⚙️" />
+    <File name="package.json" icon="📦" />
+  </Folder>
+</Files>
+
+**目录说明：**
+
+- **`src/components/`** - Vue 组件目录
+- **`src/views/`** - 页面视图组件
+- **`src/assets/`** - 静态资源（图片、svg 等）
+- **`src/styles/`** - 全局样式文件
+- **`src/utils/`** - 工具函数和配置
+- **`src/main.ts`** - 应用入口文件
+- **`public/`** - 公共静态文件
+- **`dist/`** - 构建产物
+- **`vite.config.ts`** - Vite 构建配置
+- **`package.json`** - 项目依赖和脚本配置
+
+#### 常见自定义场景
+
+<Tabs items={["主题颜色", "布局修改", "组件定制", "新增功能"]}>
+  <Tab value="主题颜色">
+    **修改主题颜色方案**
+
+    1. 编辑 `src/styles/index.scss` 或相关样式文件
+    2. 修改 CSS 变量，如：
+    ```css
+    :root {
+      --anzhiyu-theme: #163bf2;
+      --anzhiyu-theme-op: #4259ef23;
+      --anzhiyu-theme-op-deep: #4259efdd;
+      --anzhiyu-theme-op-light: #4259ef0d;
+    }
+    ```
+    3. 如果使用 Tailwind CSS，编辑 `src/styles/tailwind.css`
+
+  </Tab>
+
+  <Tab value="布局修改">
+    **调整页面布局**
+
+    1. 修改 `src/components/Layout/` 下的布局组件
+    2. 编辑 `src/views/` 中的页面组件
+    3. 调整响应式设计和网格布局
+
+  </Tab>
+
+  <Tab value="组件定制">
+    **自定义UI组件**
+
+    1. 在 `src/components/` 中修改现有组件
+    2. 创建新的自定义组件
+    3. 更新组件的样式和交互逻辑
+
+  </Tab>
+
+  <Tab value="新增功能">
+    **添加新功能模块**
+
+    1. 在 `src/views/` 中创建新页面
+    2. 在路由配置中添加新路由
+    3. 创建对应的 API 调用和数据处理
+
+  </Tab>
+</Tabs>
+
+### 步骤 5：构建生产版本
+
+完成自定义修改后，构建生产版本：
+
+```bash
+# 构建生产版本
+pnpm run build
+```
+
+构建完成后，会在项目根目录生成 `dist` 文件夹，包含所有构建产物。
+
+### 步骤 6：部署自定义前端
+
+根据您使用的部署方式，部署自定义前端的步骤会有所不同：
+
+<Tabs items={["Docker Compose", "Docker", "源码部署", "二进制文件"]}>
+  <Tab value="Docker Compose">
+    **Docker Compose 部署方式**
+
+    1. 找到您的 `docker-compose.yml` 文件所在目录
+
+    2. 在该目录下创建 `static` 文件夹并复制构建产物：
+
+    ```bash
+    # 进入 docker-compose.yml 所在目录
+    cd ~/anheyu  # 或您的 docker-compose.yml 目录
+
+    # 创建 static 目录
+    mkdir -p static
+
+    # 将构建产物复制到 static 目录
+    cp -r /path/to/anheyu-app-frontend/dist/* static/
+    ```
+
+    3. 修改 `docker-compose.yml` 文件，添加 static 目录的挂载：
+
+    ```yaml
+    services:
+      anheyu:
+        # ... 其他配置
+        volumes:
+          - ./data:/anheyu/data
+          - ./static:/anheyu/static    # 添加这一行
+    ```
+
+    4. 最终目录结构：
+
+    <Files>
+      <Folder name="~/anheyu" defaultOpen>
+        <File name="docker-compose.yml" icon="🐳" />
+        <Folder name="data">
+          <File name="..." icon="💾" />
+        </Folder>
+        <Folder name="static" defaultOpen>
+          <File name="index.html" icon="🌐" />
+          <Folder name="static">
+            <File name="..." icon="📦" />
+          </Folder>
+          <File name="favicon.ico" />
+          <File name="..." icon="📄" />
+        </Folder>
+      </Folder>
+    </Files>
+
+    <Callout type="info" title="Docker Compose 优势">
+      使用 Docker Compose 时，自定义前端文件通过数据卷挂载到容器内，便于管理和更新。
+    </Callout>
+
+  </Tab>
+
+  <Tab value="Docker">
+    **Docker 单容器部署方式**
+
+    1. 在宿主机上准备 static 目录：
+
+    ```bash
+    # 创建用于挂载的目录
+    mkdir -p ~/anheyu/static
+
+    # 复制构建产物
+    cp -r /path/to/anheyu-app-frontend/dist/* ~/anheyu/static/
+    ```
+
+    2. 启动容器时添加 static 目录挂载：
+
+    ```bash
+    docker run -d \
+      --name anheyu-app \
+      -p 8091:8091 \
+      -v ~/anheyu/data:/anheyu/data \
+      -v ~/anheyu/static:/anheyu/static \
+      # ... 其他参数
+      anheyu/anheyu-backend:latest
+    ```
+
+    3. 目录结构：
+
+    <Files>
+      <Folder name="~/anheyu" defaultOpen>
+        <Folder name="data">
+          <File name="..." icon="💾" />
+        </Folder>
+        <Folder name="static" defaultOpen>
+          <File name="index.html" icon="🌐" />
+          <Folder name="static">
+            <File name="..." icon="📦" />
+          </Folder>
+          <File name="..." icon="📄" />
+        </Folder>
+      </Folder>
+    </Files>
+
+    <Callout type="warn" title="Docker 挂载注意">
+      确保 static 目录的权限正确，容器内的应用需要能够读取这些文件。
+    </Callout>
+
+  </Tab>
+
+  <Tab value="源码部署">
+    **源码部署方式**
+
+    源码部署时有两种方式集成自定义前端：
+
+    **方式一：外部 static 目录（推荐）**
+
+    ```bash
+    # 进入源码项目根目录
+    cd /path/to/anheyu-app
+
+    # 创建 static 目录
+    mkdir -p static
+
+    # 复制自定义前端构建产物
+    cp -r /path/to/anheyu-app-frontend/dist/* static/
+
+    # 启动应用
+    ./anheyu-app
+    ```
+
+    **方式二：替换内置前端资源**
+
+    ```bash
+    # 删除现有的前端资源
+    rm -rf assets/dist/*
+
+    # 复制自定义前端到内置资源目录
+    cp -r /path/to/anheyu-app-frontend/dist/* assets/dist/
+
+    # 重新构建应用
+    go build -ldflags="-s -w" -o anheyu-app main.go
+
+    # 启动应用
+    ./anheyu-app
+    ```
+
+    目录结构（方式一）：
+
+    <Files>
+      <Folder name="anheyu-app" defaultOpen>
+        <Folder name="static" defaultOpen>
+          <File name="index.html" icon="🌐" />
+          <Folder name="static">
+            <File name="..." icon="📦" />
+          </Folder>
+        </Folder>
+        <Folder name="assets">
+          <File name="..." icon="📁" />
+        </Folder>
+        <File name="main.go" icon="🔧" />
+        <File name="anheyu-app" icon="⚡" />
+      </Folder>
+    </Files>
+
+    <Callout type="info" title="源码部署优势">
+      - 方式一便于开发和调试，不需要重新编译
+      - 方式二将自定义前端嵌入到二进制文件中，便于分发
+    </Callout>
+
+  </Tab>
+
+  <Tab value="二进制文件">
+    **二进制文件部署方式**
+
+    二进制文件部署时，在二进制文件同级目录创建 static 文件夹：
+
+    ```bash
+    # 进入二进制文件所在目录
+    cd ~/anheyu  # 或您的二进制文件目录
+
+    # 创建 static 目录
+    mkdir -p static
+
+    # 复制构建产物到 static 目录
+    cp -r /path/to/anheyu-app-frontend/dist/* static/
+
+    # 启动应用（应用会自动检测 static 目录）
+    ./anheyu
+    ```
+
+    最终目录结构：
+
+    <Files>
+      <Folder name="~/anheyu" defaultOpen>
+        <Folder name="static" defaultOpen>
+          <File name="index.html" icon="🌐" />
+          <Folder name="static">
+            <Folder name="js">
+              <File name="..." icon="📄" />
+            </Folder>
+            <Folder name="css">
+              <File name="..." icon="🎨" />
+            </Folder>
+            <Folder name="assets">
+              <File name="..." icon="📦" />
+            </Folder>
+          </Folder>
+          <File name="..." icon="📄" />
+        </Folder>
+        <Folder name="data">
+          <File name="..." icon="💾" />
+        </Folder>
+        <File name="conf.ini" icon="⚙️" />
+        <File name="anheyu" icon="⚡" />
+      </Folder>
+    </Files>
+
+    <Callout type="success" title="二进制部署特点">
+      二进制文件方式最简单直接，应用启动时会自动检测并使用 static 目录中的前端资源。
+    </Callout>
+
+  </Tab>
+</Tabs>
+
+### 步骤 7：重启应用
+
+根据您的部署方式，使用对应的重启命令：
+
+<Tabs items={["Docker Compose", "Docker", "源码部署", "二进制文件"]}>
+  <Tab value="Docker Compose">
+    **重启 Docker Compose 服务**
+
+    ```bash
+    # 进入 docker-compose.yml 所在目录
+    cd ~/anheyu
+
+    # 停止服务
+    docker compose down
+
+    # 重新启动服务
+    docker compose up -d
+
+    # 或者直接重启
+    docker compose restart anheyu
+    ```
+
+    **查看日志确认**
+    ```bash
+    # 查看应用日志
+    docker compose logs -f anheyu
+
+    # 应该看到类似信息：
+    # 正在使用 [模式一]: 外部 'static' 目录.
+    ```
+
+    <Callout type="info" title="Docker Compose 重启说明">
+      重启后，挂载的 static 目录会自动生效，无需额外配置。
+    </Callout>
+
+  </Tab>
+
+  <Tab value="Docker">
+    **重启 Docker 容器**
+
+    ```bash
+    # 停止并删除现有容器
+    docker stop anheyu-app
+    docker rm anheyu-app
+
+    # 重新启动容器（记得添加 static 目录挂载）
+    docker run -d \
+      --name anheyu-app \
+      -p 8091:8091 \
+      -v ~/anheyu/data:/anheyu/data \
+      -v ~/anheyu/static:/anheyu/static \
+      # ... 其他环境变量和参数
+      anheyu/anheyu-backend:latest
+    ```
+
+    **查看容器日志**
+    ```bash
+    # 查看应用日志
+    docker logs -f anheyu-app
+
+    # 确认看到：
+    # 正在使用 [模式一]: 外部 'static' 目录.
+    ```
+
+    <Callout type="warn" title="Docker 重启注意">
+      重新创建容器时，确保所有必需的挂载卷都已正确配置。
+    </Callout>
+
+  </Tab>
+
+  <Tab value="源码部署">
+    **重启源码部署的应用**
+
+    **如果是前台运行：**
+    ```bash
+    # 按 Ctrl+C 停止当前应用，然后重新启动
+    ./anheyu-app
+    ```
+
+    **如果是后台运行：**
+    ```bash
+    # 查找并停止进程
+    pkill anheyu-app
+
+    # 或者使用具体的进程ID
+    ps aux | grep anheyu-app
+    kill <进程ID>
+
+    # 重新启动
+    nohup ./anheyu-app > anheyu.log 2>&1 &
+    ```
+
+    **如果使用 systemd 服务：**
+    ```bash
+    sudo systemctl restart anheyu
+    sudo systemctl status anheyu
+    ```
+
+    **查看启动日志**
+    ```bash
+    # 查看日志文件
+    tail -f anheyu.log
+
+    # 或查看 systemd 日志
+    sudo journalctl -u anheyu -f
+    ```
+
+    <Callout type="info" title="源码部署重启说明">
+      - 外部 static 目录方式：重启即可生效
+      - 内置资源替换方式：需要重新编译后再启动
+    </Callout>
+
+  </Tab>
+
+  <Tab value="二进制文件">
+    **重启二进制文件应用**
+
+    **如果是前台运行：**
+    ```bash
+    # 按 Ctrl+C 停止应用，然后重新启动
+    ./anheyu
+    ```
+
+    **如果是后台运行：**
+    ```bash
+    # 停止应用
+    pkill anheyu
+
+    # 重新启动
+    nohup ./anheyu > ./data/anheyu.log 2>&1 &
+
+    # 查看进程状态
+    ps aux | grep anheyu
+    ```
+
+    **如果使用 systemd 服务：**
+    ```bash
+    # 重启服务
+    sudo systemctl restart anheyu
+
+    # 查看服务状态
+    sudo systemctl status anheyu
+
+    # 查看服务日志
+    sudo journalctl -u anheyu -f
+    ```
+
+    **验证启动**
+    ```bash
+    # 查看应用日志
+    tail -f ./data/anheyu.log
+
+    # 应该看到：
+    # 正在使用 [模式一]: 外部 'static' 目录.
+    ```
+
+    <Callout type="success" title="二进制部署重启">
+      二进制文件重启最简单，应用会自动检测 static 目录并切换模式。
+    </Callout>
+
+  </Tab>
+</Tabs>
+
+**验证自定义前端生效**
+
+无论使用哪种部署方式，应用启动后都会在日志中显示：
+
+```
+正在使用 [模式一]: 外部 'static' 目录.
+```
+
+如果看到这条信息，说明您的自定义前端已经成功加载。然后访问 http://localhost:8091 查看效果。
+
+## 快速参考
+
+为了方便查阅，以下是各种部署方式的自定义前端要点总结：
+
+<Tabs items={["Docker Compose", "Docker", "源码部署", "二进制文件"]}>
+  <Tab value="Docker Compose">
+    **Docker Compose 快速参考**
+
+    ```bash
+    # 1. 克隆并构建前端
+    git clone https://github.com/anzhiyu-c/anheyu-app-frontend.git
+    cd anheyu-app-frontend
+    pnpm install
+    pnpm run build
+
+    # 2. 部署到 Docker Compose 目录
+    cd ~/anheyu  # docker-compose.yml 所在目录
+    mkdir -p static
+    cp -r /path/to/anheyu-app-frontend/dist/* static/
+
+    # 3. 修改 docker-compose.yml，添加挂载
+    # volumes:
+    #   - ./data:/anheyu/data
+    #   - ./static:/anheyu/static    # 添加这行
+
+    # 4. 重启服务
+    docker compose restart anheyu
+    docker compose logs -f anheyu  # 查看日志确认
+    ```
+
+    ✅ **优势**：完全容器化，环境隔离
+    📁 **目录结构**：static 与 docker-compose.yml 同级
+    🔧 **配置要求**：需要修改 docker-compose.yml 添加挂载
+
+  </Tab>
+
+  <Tab value="Docker">
+    **Docker 单容器快速参考**
+
+    ```bash
+    # 1. 准备前端资源
+    git clone https://github.com/anzhiyu-c/anheyu-app-frontend.git
+    cd anheyu-app-frontend
+    pnpm install && pnpm run build
+
+    # 2. 准备挂载目录
+    mkdir -p ~/anheyu/static
+    cp -r dist/* ~/anheyu/static/
+
+    # 3. 重启容器（添加挂载）
+    docker stop anheyu-app && docker rm anheyu-app
+    docker run -d --name anheyu-app \
+      -p 8091:8091 \
+      -v ~/anheyu/data:/anheyu/data \
+      -v ~/anheyu/static:/anheyu/static \
+      anheyu/anheyu-backend:latest
+    ```
+
+    ✅ **优势**：灵活的容器配置
+    📁 **目录结构**：在宿主机准备 static 目录
+    🔧 **配置要求**：启动时添加 -v 挂载参数
+
+  </Tab>
+
+  <Tab value="源码部署">
+    **源码部署快速参考**
+
+    **方式一：外部 static（推荐）**
+    ```bash
+    # 1. 在源码根目录操作
+    cd /path/to/anheyu-app
+
+    # 2. 准备自定义前端
+    git clone https://github.com/anzhiyu-c/anheyu-app-frontend.git ../frontend
+    cd ../frontend
+    pnpm install && pnpm run build
+
+    # 3. 复制到源码目录
+    cd /path/to/anheyu-app
+    mkdir -p static
+    cp -r ../frontend/dist/* static/
+
+    # 4. 重启应用
+    pkill anheyu-app  # 如果在运行
+    ./anheyu-app
+    ```
+
+    **方式二：替换内置资源**
+    ```bash
+    cd /path/to/anheyu-app
+    rm -rf assets/dist/*
+    cp -r /path/to/frontend/dist/* assets/dist/
+    go build -ldflags="-s -w" -o anheyu-app main.go
+    ./anheyu-app
+    ```
+
+    ✅ **优势**：完全控制源码，便于二次开发
+    📁 **目录结构**：static 与源码根目录同级
+    🔧 **配置要求**：无需额外配置，重启即可
+
+  </Tab>
+
+  <Tab value="二进制文件">
+    **二进制文件快速参考**
+
+    ```bash
+    # 1. 准备前端资源（在任意位置）
+    git clone https://github.com/anzhiyu-c/anheyu-app-frontend.git
+    cd anheyu-app-frontend
+    pnpm install && pnpm run build
+
+    # 2. 部署到二进制文件目录
+    cd ~/anheyu  # 二进制文件所在目录
+    mkdir -p static
+    cp -r /path/to/anheyu-app-frontend/dist/* static/
+
+    # 3. 重启应用
+    pkill anheyu  # 停止现有进程
+    ./anheyu      # 或 nohup ./anheyu > ./data/anheyu.log 2>&1 &
+    ```
+
+    ✅ **优势**：部署最简单，性能最好
+    📁 **目录结构**：static 与二进制文件同级
+    🔧 **配置要求**：无需配置，自动检测 static 目录
+
+  </Tab>
+</Tabs>
+
+### 选择建议
+
+| 部署方式           | 自定义前端难度 | 推荐指数   | 适用场景               |
+| ------------------ | -------------- | ---------- | ---------------------- |
+| **Docker Compose** | ⭐⭐           | ⭐⭐⭐⭐⭐ | 生产环境，完整服务栈   |
+| **Docker**         | ⭐⭐⭐         | ⭐⭐⭐⭐   | 灵活的容器化部署       |
+| **源码部署**       | ⭐⭐⭐⭐       | ⭐⭐⭐     | 开发环境，需要二次开发 |
+| **二进制文件**     | ⭐             | ⭐⭐⭐⭐⭐ | 生产环境，追求性能     |
+
+<Callout type="info" title="推荐流程">
+
+1. **新手用户**：选择 Docker Compose，一键部署完整功能
+2. **进阶用户**：选择 Docker Compose，如果喜欢折腾的话，那就选二进制获得最佳性能和复杂环境操作，可能会没有售后
+3. **开发者**：选择源码部署，便于调试和二次开发
+4. **运维人员**：选择 Docker，灵活的容器化管理
+
+</Callout>
+
+## 高级定制
+
+### 自定义构建配置
+
+编辑 `vite.config.ts` 以自定义构建行为：
+
+```typescript
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+
+export default defineConfig({
+  plugins: [vue()],
+  build: {
+    // 自定义构建选项
+    outDir: "dist",
+    assetsDir: "static",
+    // 其他配置...
+  },
+  // 其他配置...
+});
+```
+
+## 最佳实践
+
+<Tabs items={["开发建议", "性能优化", "维护更新"]}>
+
+  <Tab value="开发建议">
+    **开发时的最佳实践** 
+    1. **版本控制**：使用 Git 管理您的自定义代码 
+    2. **组件化开发**：保持组件的单一职责和可重用性 
+    3. **样式组织**：合理组织 CSS/SCSS 文件结构 
+    4. **TypeScript**：利用 TypeScript 提供的类型安全 
+    5. **代码规范**：遵循项目的 ESLint 和 Prettier 配置
+  </Tab>
+  <Tab value="性能优化">
+    **性能优化建议** 
+    1. **懒加载**：对非首屏组件实施懒加载 
+    2. **资源优化**：压缩图片，优化静态资源大小 
+    3. **缓存策略**：合理配置浏览器缓存 
+    4. **代码分割**：利用 Vite 的代码分割功能 
+    5. **打包分析**：使用打包分析工具优化构建产物，你可以使用 `pnpm run report` 查看打包分析
+  </Tab>
+  <Tab value="维护更新">
+    **维护和更新** 
+    1. **定期更新**：关注上游仓库的更新，及时合并新功能 
+    2. **备份配置**：备份您的自定义配置和重要修改 
+    3. **测试环境**：在生产环境部署前先在测试环境验证 
+    4. **文档记录**：记录重要的自定义修改和配置 
+    5. **版本标记**：为您的自定义版本打上版本标签
+  </Tab>
+</Tabs>
+
+## 故障排除
+
+### 常见问题及解决方案
+
+<Accordions type="single">
+  <Accordion title="应用启动后仍显示默认界面">
+    **可能原因：**
+    - static 目录创建位置不正确
+    - 构建产物没有正确复制到 static 目录
+    - 应用没有重启
+    - Docker 容器挂载路径配置错误
+
+    **根据部署方式的解决方案：**
+
+    **Docker Compose:**
+    1. 检查 `docker-compose.yml` 中是否添加了 static 目录挂载
+    2. 确认 static 目录与 docker-compose.yml 在同一目录
+    3. 执行 `docker compose restart anheyu`
+    4. 查看日志：`docker compose logs -f anheyu`
+
+    **Docker 单容器:**
+    1. 检查启动命令中是否包含 `-v ~/anheyu/static:/anheyu/static`
+    2. 确认宿主机 static 目录路径正确
+    3. 重新创建容器
+    4. 查看日志：`docker logs -f anheyu-app`
+
+    **源码部署:**
+    1. 确认 static 目录与编译后的二进制文件在同一目录
+    2. 检查 static/index.html 文件是否存在
+    3. 重启应用进程
+    4. 查看应用日志文件
+
+    **二进制文件:**
+    1. 确认 static 目录与二进制文件在同一目录级别
+    2. 检查文件权限，确保应用可以读取 static 目录
+    3. 重启二进制文件
+    4. 查看日志确认显示"正在使用 [模式一]: 外部 'static' 目录"
+
+  </Accordion>
+
+  <Accordion title="构建失败或报错">
+    **可能原因：**
+    - 依赖安装不完整
+    - Node.js 版本不兼容
+    - 代码语法错误
+
+    **解决方案：**
+    1. 删除 node_modules 和 pnpm-lock.yaml，重新安装依赖
+    2. 检查 Node.js 版本是否 >= 18.0
+    3. 检查修改的代码是否有语法错误
+    4. 运行 `pnpm run dev` 在开发环境中调试问题
+
+  </Accordion>
+
+  <Accordion title="开发服务器无法连接后端API">
+    **可能原因：**
+    - 后端服务未启动
+    - API 地址配置错误
+    - CORS 跨域问题
+
+    **解决方案：**
+    1. 确认 Anheyu 后端服务正常运行在 8091 端口
+    2. 检查 .env 文件中的 API 地址配置
+    3. 确认后端服务已正确配置 CORS
+
+  </Accordion>
+
+  <Accordion title="静态资源加载失败">
+    **可能原因：**
+    - 资源路径配置错误
+    - 构建配置问题
+    - 容器内挂载路径问题
+    - 文件权限不正确
+
+    **根据部署方式的解决方案：**
+
+    **通用检查：**
+    1. 检查 vite.config.ts 中的 base 和 assetsDir 配置
+    2. 确认 static 目录结构完整：
+
+    <Files>
+      <Folder name="static" defaultOpen>
+        <File name="index.html" icon="🌐" />
+        <Folder name="static" defaultOpen>
+          <Folder name="js">
+            <File name="main.js" icon="📄" />
+            <File name="..." icon="📄" />
+          </Folder>
+          <Folder name="css">
+            <File name="style.css" icon="🎨" />
+            <File name="..." icon="🎨" />
+          </Folder>
+          <Folder name="assets">
+            <File name="..." icon="📦" />
+          </Folder>
+        </Folder>
+        <File name="..." icon="📄" />
+      </Folder>
+    </Files>
+
+    **Docker Compose:**
+    1. 验证容器内挂载：`docker compose exec anheyu ls -la /anheyu/static`
+    2. 检查挂载配置：`./static:/anheyu/static`
+    3. 确认文件权限：`chmod -R 755 static/`
+
+    **Docker 单容器:**
+    1. 进入容器检查：`docker exec -it anheyu-app ls -la /anheyu/static`
+    2. 验证挂载参数：`-v ~/anheyu/static:/anheyu/static`
+    3. 检查宿主机目录权限
+
+    **源码/二进制部署:**
+    1. 检查相对路径是否正确
+    2. 确认工作目录与 static 目录的位置关系
+    3. 验证文件读取权限：`ls -la static/`
+
+  </Accordion>
+</Accordions>
+
+### 调试技巧
+
+1. **查看启动日志**：应用启动时会显示使用的静态资源模式
+2. **浏览器开发工具**：使用浏览器的开发者工具检查网络请求和控制台错误
+3. **对比文件**：将构建产物与默认版本进行对比，找出差异
+4. **逐步调试**：先使用原始代码构建，确认流程无误后再添加自定义修改
+
+<Callout type="success" title="完成自定义">
+  恭喜！您已经成功掌握了 Anheyu
+  的主题定制功能。现在您可以创建独特的界面设计，为用户提供个性化的体验。记得定期备份您的自定义代码，并关注官方更新以获得最新功能。
+</Callout>
+
+## 缓存
+
+Anheyu 会在安全上下文环境下注册 ServiceWorker 来缓存静态资源。在用户首次访问 Anheyu 站点时，会自动请求并缓存所有静态资源。
+
+### 清理缓存
+
+在 ServiceWorker 已注册时，当静态资源版本发生更新时，用户会收到更新提示弹窗，并会刷新页面以获取最新资源。如果你需要手动删除缓存，请使用 F12 打开浏览器的 开发者工具 -> Application -> Storage -> Clear site data 删除缓存。
+
+![](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/66482039d217e8864312d958aaba0684_4473879595010857278.png)
+
+## 社区与支持
+
+- 📚 **官方文档**：参考完整的开发文档和 API 说明
+- 💬 **社区讨论**：在 [GitHub Issues](https://github.com/anzhiyu-c/anheyu-app-frontend/issues) 中参与讨论和提问
+- 🎨 **主题分享**：与社区分享您的自定义主题
+- 🐛 **问题反馈**：报告 Bug 或提出功能建议
+
+---
+
+通过自定义前端，您可以让 Anheyu 完全符合您的品牌形象和用户需求。开始您的创意之旅吧！

@@ -9,6 +9,7 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import { Accordion, Accordions } from "fumadocs-ui/components/accordion";
 import { Callout } from "fumadocs-ui/components/callout";
 import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import { File, Folder, Files } from "fumadocs-ui/components/files";
 import type { MDXComponents } from "mdx/types";
 
 // use this function to get MDX components, you will need it for rendering MDX
@@ -20,6 +21,9 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     Callout,
     Tab,
     Tabs,
+    File,
+    Folder,
+    Files,
     ...components,
   };
 }
