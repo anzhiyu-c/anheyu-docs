@@ -3,120 +3,229 @@ title: MarkDown编辑器
 description: 了解 Anheyu 的文章编辑器
 ---
 
+## 🦄 标签页（Tabs）
+
+![标签页（Tabs）](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/fefbd733f960d39d18c41104a1407b5f_2609482547639822236.png?x-oss-process=image/format,avif)
+
 ````markdown
-# 欢迎使用 Anheyu-App
-
-这是一篇系统生成的默认文章，你可以编辑或删除它。
-
-## 段落文本 p
-
-```markdown
-<font color=#00ffff size=7> color=#00ffff </font>
-
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-<font color=#00ffff size=7> color=#00ffff </font>
-<p style="text-align: left">我是居中文字</p>
-```
-
 :::tabs
 
-== tab 标签语法
+== tab JavaScript
 
-```markdown
-<font color=#00ffff size=7> color=#00ffff </font>
-
-<p style="text-align: left">我是居中文字</p>
+```js
+const hello = "Hello World";
+console.log(hello);
 ```
 
-== tab 配置参数
+== tab TypeScript
 
-颜色: color 十六进制值
-大小: size 数字值(number)
+```ts
+const hello: string = "Hello World";
+console.log(hello);
+```
 
-p 标签支持写 自定义 css
+== tab Vue
 
-== tab 样式预览
+```vue
+<template>
+  <div>{{ hello }}</div>
+</template>
 
-<font color=#00ffff size=7> color=#00ffff </font>
-
-<p style="text-align: left">我是居中文字</p>
-
-== tab 示例源码
-
-```markdown
-<font color=#00ffff size=7> color=#00ffff </font>
-
-<p style="text-align: left">我是居中文字</p>
+<script setup>
+const hello = "Hello World";
+</script>
 ```
 
 :::
 
-### 🤖 基本演示
+```
 
-**加粗**，<u>下划线</u>，_斜体_，~~删除线~~，上标^26^，下标~1~，`inline code`，[超链接](https://github.com/imzbf)
+```
+````
 
-> 引用：《I Have a Dream》
+## 🐶 标题
 
-1. So even though we face the difficulties of today and tomorrow, I still have a dream.
-2. It is a dream deeply rooted in the American dream.
-3. I have a dream that one day this nation will rise up.
+# 我是 h1 标题
 
-- [ ] 周五
-- [ ] 周六
-- [x] 周天
+## 我是 h2 标题
 
-![图片](https://imzbf.github.io/md-editor-rt/imgs/mark_emoji.gif)
+### 我是 h3 标题
 
-## 🤗 代码演示
+```markdown
+# 我是 h1 标题
 
-```vue
-<template>
-  <MdEditor v-model="text" />
-</template>
+## 我是 h2 标题
 
-<script setup>
+### 我是 h3 标题
+```
+
+## 🐱 加粗
+
+**I have a dream that one day this nation will rise up.**
+
+```markdown
+**I have a dream that one day this nation will rise up.**
+```
+
+## 🐭 斜体
+
+_It is a dream deeply rooted in the American dream._
+
+```markdown
+_It is a dream deeply rooted in the American dream._
+```
+
+## 🐹 删除线
+
+~~It is a dream deeply rooted in the American dream.~~
+
+```markdown
+~~It is a dream deeply rooted in the American dream.~~
+```
+
+## 🐻 超链接
+
+[安知鱼博客](https://blog.anheyu.com)
+
+```markdown
+[安知鱼博客](https://blog.anheyu.com)
+```
+
+## 🐼 图片
+
+![描述文字](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/8562b9bd5230b81be17aaff481cb95c0_8941098064819110923.jpg "title")
+
+```markdown
+![描述文字](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/8562b9bd5230b81be17aaff481cb95c0_8941098064819110923.jpg "title")
+```
+
+## 🙉 下划线
+
+<u>So even though we face the difficulties of today and tomorrow, I still have a dream.</u>
+
+```markdown
+<u>So even though we face the difficulties of today and tomorrow, I still have a dream.</u>
+```
+
+## 🙊 上标
+
+![上标](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/140c72dc4b402b222db4bd0a8c910d8d_4025601921127434694.png?x-oss-process=image/format,avif)
+
+```markdown
+I have a dream that one day this nation will rise up.^[1]^
+```
+
+## 🐒 下标
+
+![下标](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/b08b4b413c991538dea852d52fbe351d_9217142739286369102.png?x-oss-process=image/format,avif)
+
+```markdown
+I have a dream that one day this nation will rise up.~[2]~
+```
+
+## 🐰 行内代码
+
+`md-editor-v3`
+
+```markdown
+`md-editor-v3`
+```
+
+## 🦊 块级代码
+
+```js
 import { ref } from "vue";
 import { MdEditor } from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
 const text = ref("Hello Editor!");
-</script>
 ```
 
-## 🖨 文本演示
+````markdown
+```js
+import { ref } from "vue";
+import { MdEditor } from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
 
-依照普朗克长度这项单位，目前可观测的宇宙的直径估计值（直径约 930 亿光年，即 8.8 × 10^26^ 米）即为 5.4 × 10^61^倍普朗克长度。而可观测宇宙体积则为 8.4 × 10^184^立方普朗克长度（普朗克体积）。
-
-## 📈 表格演示
-
-| 表头 1 |  表头 2  | 表头 3 |
-| :----- | :------: | -----: |
-| 左对齐 | 中间对齐 | 右对齐 |
-
-## 📏 公式
-
-行内：$x+y^{2x}$
-
-$$
-\sqrt[3]{x}
-$$
-
-## 🧬 图表
-
-```mermaid
-flowchart TD
-  Start --> Stop
+const text = ref("Hello Editor!");
 ```
+````
+
+## 🐻‍❄️ 引用
+
+```markdown
+> 引用：《I Have a Dream》
+```
+
+## 🐨 有序列表
+
+1. So even though we face the difficulties of today and tomorrow, I still have a dream.
+2. It is a dream deeply rooted in the American dream.
+3. I have a dream that one day this nation will rise up.
+
+```markdown
+1. So even though we face the difficulties of today and tomorrow, I still have a dream.
+2. It is a dream deeply rooted in the American dream.
+3. I have a dream that one day this nation will rise up.
+```
+
+## 🐯 无序列表
+
+- So even though we face the difficulties of today and tomorrow, I still have a dream.
+- It is a dream deeply rooted in the American dream.
+- I have a dream that one day this nation will rise up.
+
+```markdown
+- So even though we face the difficulties of today and tomorrow, I still have a dream.
+- It is a dream deeply rooted in the American dream.
+- I have a dream that one day this nation will rise up.
+```
+
+## 🦁 任务列表
+
+- [ ] 周五
+- [ ] 周六
+- [x] 周天
+
+```markdown
+- [ ] 周五
+- [ ] 周六
+- [x] 周天
+```
+
+## 🐮 表格
+
+| 表头 1 |  表头 2  | 表头 3 | 表头 4 |
+| :----- | :------: | -----: | ------ |
+| 左对齐 | 中间对齐 | 右对齐 | 默认   |
+
+```markdown
+| 表头 1 |  表头 2  | 表头 3 | 表头 4 |
+| :----- | :------: | -----: | ------ |
+| 左对齐 | 中间对齐 | 右对齐 | 默认   |
+```
+
+## 🐷 数学公式
+
+### 🐽 行内
+
+![行内](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/e2e8fa89161a3597be5ce513e4510242_945955225213638841.png?x-oss-process=image/format,avif)
+
+```markdown
+$x+y^&#123;2x&#125;$
+```
+
+### 🐸 块级
+
+![块级](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/b2a807ca1fcbd50673943547c7a959a7_471307950384133963.png?x-oss-process=image/format,avif)
+
+```markdown
+$$
+\sqrt[3]&#123;x&#125;
+$$
+```
+
+## 🐵 图表
 
 ```mermaid
 ---
@@ -135,15 +244,160 @@ gitGraph
    commit
 ```
 
-## 🪄 提示
+````markdown
+```mermaid
+---
+title: Example Git diagram
+---
+gitGraph
+   commit
+   commit
+   branch develop
+   checkout develop
+   commit
+   commit
+   checkout main
+   merge develop
+   commit
+   commit
+```
+````
 
-!!! success 支持的类型
+## 🙈 提示
 
-note、abstract、info、tip、success、question、warning、failure、danger、bug、example、quote、hint、caution、error、attention
+![提示](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/d682221493e99e64e9c9d2416b6812d3_3189737305022767468.png?x-oss-process=image/format,avif)
+
+```markdown
+!!! note 支持的类型
+
+note、abstract、info、tip、success、question、warning
+
+failure、danger、bug、example、quote、hint、caution、error、attention
 
 !!!
 
-## ☘️ 占个坑@！
+!!! success Title
 
-没了
-````
+!!!
+
+!!! bug Title
+
+!!!
+
+!!! abstract Title
+
+!!!
+
+!!! attention Title
+
+!!!
+
+!!! caution Title
+
+!!!
+
+!!! danger Title
+
+!!!
+
+!!! error Title
+
+!!!
+
+!!! example Title
+
+!!!
+```
+
+## 💰 付费内容 （PRO 版本专享）
+
+![](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/525985d697e736ba95fb847590935931_480370356362226895.png?x-oss-process=image/format,avif)
+
+### 基础用法
+
+```markdown
+:::paid-content
+这是一段付费内容，只有购买后才能查看完整内容。
+
+付费内容可以包含：
+
+- 文字内容
+- **格式化文本**
+- `代码片段`
+- > 引用内容
+
+以及其他 Markdown 语法。
+:::
+```
+
+### 自定义标题和价格
+
+```markdown
+:::paid-content title="高级教程" price="9.9" original-price="19.9" currency="¥"
+这是一个自定义标题和价格的付费内容示例。
+
+支持设置：
+
+- 自定义标题
+- 当前价格
+- 原价（划线显示）
+- 货币符号
+
+当原价大于当前价格时，会显示限时特惠标识。
+:::
+```
+
+### 参数说明
+
+| 参数                    | 描述                 | 默认值     | 示例                    |
+| ----------------------- | -------------------- | ---------- | ----------------------- |
+| `title` 或 `paid-title` | 付费内容标题         | "付费内容" | `title="VIP教程"`       |
+| `price`                 | 当前价格             | 1.0        | `price="9.9"`           |
+| `original-price`        | 原价（用于显示优惠） | 0.0        | `original-price="19.9"` |
+| `currency`              | 货币单位             | "¥"        | `currency="$"`          |
+
+**注意**：`paid-title` 参数优先级高于 `title` 参数。
+
+## 🎨 自定义 HTML 样式
+
+### 彩色文字
+
+<font color="#00ffff" size="7">
+  青色大字体
+</font>
+
+```markdown
+<font color="#00ffff" size="7">青色大字体</font>
+```
+
+### 文本对齐
+
+<p style={{ textAlign: "center" }}>居中文字</p>
+<p style={{ textAlign: "right" }}>右对齐文字</p>
+
+```markdown
+<p style={{textAlign: 'center'}}>居中文字</p>
+<p style={{textAlign: 'right'}}>右对齐文字</p>
+```
+
+## 📝 编辑器特色功能
+
+### 🔄 代码折叠
+
+编辑器支持根据设置自动折叠超过指定行数的代码块，提升阅读体验。默认超过 10 行的代码会被自动折叠。
+
+### 📋 一键复制
+
+每个代码块都有复制按钮，点击即可复制代码。
+
+### 🌙 主题切换
+
+编辑器会自动根据网站主题切换明暗模式。
+
+### 💾 自动保存
+
+支持 Ctrl+S 快捷键保存内容。
+
+### 🎯 智能表格
+
+表格会自动添加容器包装，支持横向滚动，在移动端也能良好展示。
