@@ -5,13 +5,21 @@
  * @LastEditTime: 2025-09-08 18:35:25
  * @LastEditors: 安知鱼
  */
-import { defineConfig, defineDocs } from "fumadocs-mdx/config";
+import { defineConfig, defineDocs, frontmatterSchema } from "fumadocs-mdx/config";
+import { z } from "zod";
 
 export const docs = defineDocs({
-  // No custom schema, use default
+  docs: {
+    schema: frontmatterSchema.extend({
+      date: z.string().date().or(z.date()).optional(),
+      lastModified: z.string().date().or(z.date()).optional(),
+      index: z.number().optional(),
+    }),
+  },
 });
 
 export default defineConfig({
+  lastModifiedTime: "git", // 启用 Git 最后修改时间
   mdxOptions: {
     // MDX options
   },

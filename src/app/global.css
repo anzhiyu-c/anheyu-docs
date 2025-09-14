@@ -2,7 +2,7 @@
  * @Description: 
  * @Author: 安知鱼
  * @Date: 2025-09-08 17:42:53
- * @LastEditTime: 2025-09-13 19:12:42
+ * @LastEditTime: 2025-09-14 17:51:25
  * @LastEditors: 安知鱼
  */
 @import "tailwindcss";
@@ -112,6 +112,7 @@
   --style-border-hover-always: 1px solid var(--anzhiyu-main);
   --anzhiyu-main-none: rgba(184, 184, 184, 0) !important;
   --anzhiyu-wihite-font: #fff;
+  --color-fd-primary: var(--anzhiyu-main) !important;
 }
 
 html.light {

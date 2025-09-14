@@ -12,15 +12,22 @@ import { notFound } from "next/navigation";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { getMDXComponents } from "@/mdx-components";
 
-export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
+interface PageProps {
+  params: Promise<{ slug?: string[] }>;
+}
+
+export default async function Page(props: PageProps) {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
 
   const MDXContent = page.data.body;
 
+  // 获取更新时间：page.data.lastModified 包含了 frontmatter 的 lastModified 或 Git 最后修改时间
+  const lastUpdate = page.data.lastModified ? new Date(page.data.lastModified) : undefined;
+
   return (
-    <DocsPage toc={page.data.toc} full={page.data.full}>
+    <DocsPage toc={page.data.toc} full={page.data.full} lastUpdate={lastUpdate}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
       <DocsBody>
@@ -39,7 +46,7 @@ export async function generateStaticParams() {
   return source.generateParams();
 }
 
-export async function generateMetadata(props: PageProps<"/docs/[[...slug]]">): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
   const page = source.getPage(params.slug);
   if (!page) notFound();
