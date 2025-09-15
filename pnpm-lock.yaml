@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@orama/stopwords':
+        specifier: ^3.1.13
+        version: 3.1.13
+      '@orama/tokenizers':
+        specifier: ^3.1.13
+        version: 3.1.13
       fumadocs-core:
         specifier: 15.7.10
         version: 15.7.10(@types/react@19.1.13)(next@15.5.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -519,6 +525,14 @@ packages:
 
   '@orama/orama@3.1.13':
     resolution: {integrity: sha512-O0hdKt4K31i8fpq8Bw5RfdPVAqm0EdduBUcluPo2MRcfCOwUEf5JlnvRhf/J0ezOYOD8jQ/LumYZxOVi/XK/BA==}
+    engines: {node: '>= 20.0.0'}
+
+  '@orama/stopwords@3.1.13':
+    resolution: {integrity: sha512-+hQUIfluBJemXirxqls+HKWENnhkpsJql8owFKpuJoBJHYztnrCG0Jrshyo4EMVGmSoMTAsV6DHfTIthNnso7A==}
+    engines: {node: '>= 20.0.0'}
+
+  '@orama/tokenizers@3.1.13':
+    resolution: {integrity: sha512-xGMlS4JyFulH9gOOnT7xygyX/6mtITOfjPRH2pvDyJBcBIZMUdmJ4VQpb59dxloMRv8Tfj8bcKkzhspkrcJ9Sw==}
     engines: {node: '>= 20.0.0'}
 
   '@radix-ui/number@1.1.1':
@@ -3399,6 +3413,12 @@ snapshots:
   '@nolyfill/is-core-module@1.0.39': {}
 
   '@orama/orama@3.1.13': {}
+
+  '@orama/stopwords@3.1.13': {}
+
+  '@orama/tokenizers@3.1.13':
+    dependencies:
+      '@orama/orama': 3.1.13
 
   '@radix-ui/number@1.1.1': {}
 
