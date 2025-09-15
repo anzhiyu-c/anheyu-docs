@@ -77,7 +77,7 @@ export default function HomePage() {
                 QQ 群
               </a>
               <a
-                href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu"
+                href="https://github.com/anzhiyu-c/anheyu-app"
                 target="_blank"
                 rel="noreferrer"
                 className="px-5 py-2.5 text-base font-semibold transition bg-gray-100 rounded-lg shadow-sm text-slate-700 hover:bg-gray-200 dark:bg-slate-700 dark:text-slate-200 dark:hover:bg-slate-600"
