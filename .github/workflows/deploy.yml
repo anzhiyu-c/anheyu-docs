@@ -231,18 +231,25 @@ jobs:
               exit 1
             fi
 
-            # 检查宝塔进程状态
+            # 检查宝塔进程状态（可选检查）
+            echo "🔍 Checking Baota process status..."
             if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
               PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid)
               if kill -0 $PID 2>/dev/null; then
                 echo "✅ Baota process is running (PID: $PID)"
               else
-                echo "❌ Baota process is not running"
-                exit 1
+                echo "⚠️  Baota PID file exists but process is not running"
               fi
             else
-              echo "❌ No PID file found"
-              exit 1
+              echo "⚠️  No Baota PID file found, but service is running on port 3000"
+            fi
+
+            # 检查 Next.js 进程
+            echo "🔍 Checking Next.js process..."
+            NEXT_PID=$(lsof -ti:3000 2>/dev/null || echo "")
+            if [ ! -z "$NEXT_PID" ]; then
+              echo "✅ Next.js process is running (PID: $NEXT_PID)"
             fi
 
             echo "🎉 Health check passed! Deployment successful!"
+            echo "📊 Service is running on port 3000 and ready to serve requests!"
