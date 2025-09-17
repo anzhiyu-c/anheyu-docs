@@ -17,18 +17,18 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
 
-      # 2. 设置 Node.js 环境
+      # 2. 设置 pnpm
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      # 3. 设置 Node.js 环境
       - name: 📦 Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "18"
           cache: "pnpm"
-
-      # 3. 设置 pnpm
-      - name: 📦 Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
 
       # 4. 安装依赖
       - name: 📦 Install dependencies
