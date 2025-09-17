@@ -82,6 +82,7 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 - ✅ 支持全局中控台
 - ✅ 支持快捷键选项
 - ✅ 付费文章内容 (PRO)
+- ✅ 支持密码文章内容 (PRO)
 
 ## 部分功能展示
 
@@ -104,6 +105,16 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 **AI 摘要** 迅速读取文章内容。
 
 ![AI摘要](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/3e4d676c64930e1c573393420dc2cba5_2848259665925430.png?x-oss-process=image/format,avif)
+
+
+**订单管理(PRO)**
+
+![付费文章内容](https://upload-bbs.miyoushe.com/upload/2025/09/17/125766904/4410b49e38af24bef72e6ae555495e09_6600710485516302903.png?x-oss-process=image/format,avif)
+
+**密码文章内容(PRO)**
+
+![密码文章内容](https://upload-bbs.miyoushe.com/upload/2025/09/17/125766904/8baeeafcb2cf9caf72c84b89f2c69d67_5541575116482903287.png?x-oss-process=image/format,avif)
+
 
 **让人眼前一亮的清爽界面**
 
