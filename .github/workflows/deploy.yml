@@ -1,0 +1,241 @@
+name: 🚀 Deploy to Baota Server
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch: # 允许手动触发
+
+jobs:
+  deploy:
+    name: 🏗️ Build and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 检出代码
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 设置 Node.js 环境
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+          cache: "npm"
+
+      # 3. 设置 pnpm
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      # 4. 安装依赖
+      - name: 📦 Install dependencies
+        run: pnpm install
+
+      # 5. 构建项目
+      - name: 🏗️ Build project
+        run: pnpm run build
+
+      # 6. 创建部署包
+      - name: 📦 Create deployment package
+        run: |
+          # 创建部署目录
+          mkdir -p deploy
+
+          # 复制必要文件到部署目录
+          cp -r .next deploy/
+          cp -r content deploy/
+          cp -r public deploy/
+          cp -r src deploy/
+          cp package.json deploy/
+          cp next.config.mjs deploy/
+          cp tsconfig.json deploy/
+          cp postcss.config.mjs deploy/ 2>/dev/null || echo "postcss.config.mjs not found, skipping"
+          cp tailwind.config.ts deploy/ 2>/dev/null || echo "tailwind.config.ts not found, skipping"  
+          cp source.config.ts deploy/
+
+          # 创建生产环境的 package.json（仅包含运行时依赖）
+          node -e "
+            const pkg = require('./package.json');
+            const prodPkg = {
+              name: pkg.name,
+              version: pkg.version,
+              scripts: {
+                start: pkg.scripts.start
+              },
+              dependencies: pkg.dependencies
+            };
+            require('fs').writeFileSync('./deploy/package.json', JSON.stringify(prodPkg, null, 2));
+          "
+
+          # 压缩部署包
+          cd deploy
+          tar -czf ../anheyu-docs-$(date +%Y%m%d-%H%M%S).tar.gz .
+          cd ..
+
+          # 创建最新版本的软链接
+          ln -sf anheyu-docs-$(date +%Y%m%d-%H%M%S).tar.gz anheyu-docs-latest.tar.gz
+
+      # 7. 部署到服务器
+      - name: 🚀 Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            echo "🚀 Starting deployment..."
+
+            # 设置变量
+            PROJECT_DIR="/www/wwwroot/anheyu-docs"
+            BACKUP_DIR="/www/backup/anheyu-docs"
+            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+
+            # 创建备份目录
+            mkdir -p $BACKUP_DIR
+
+            # 备份当前版本
+            if [ -d "$PROJECT_DIR" ]; then
+              echo "📦 Creating backup..."
+              tar -czf $BACKUP_DIR/backup-$TIMESTAMP.tar.gz -C $PROJECT_DIR . 2>/dev/null || echo "Backup failed, continuing..."
+              
+              # 清理旧备份，只保留最新的3份
+              echo "🧹 Cleaning old backups (keeping only 3 most recent)..."
+              cd $BACKUP_DIR
+              ls -t backup-*.tar.gz 2>/dev/null | tail -n +4 | xargs -r rm -f 2>/dev/null || echo "No old backups to clean"
+              BACKUP_COUNT=$(ls -1 backup-*.tar.gz 2>/dev/null | wc -l || echo "0")
+              echo "📊 Current backup count: $BACKUP_COUNT"
+            fi
+
+            # 创建项目目录
+            mkdir -p $PROJECT_DIR
+
+            # 下载部署包
+            echo "📥 Downloading deployment package..."
+            cd /tmp
+
+            # 停止当前服务
+            echo "⏹️ Stopping current service..."
+            pm2 stop anheyu-docs 2>/dev/null || echo "Service not running"
+
+      # 8. 上传部署包并解压
+      - name: 📤 Upload and extract
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          source: "anheyu-docs-latest.tar.gz"
+          target: "/tmp/"
+
+      # 9. 完成部署
+      - name: ✅ Complete deployment
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            echo "📦 Extracting deployment package..."
+
+            PROJECT_DIR="/www/wwwroot/anheyu-docs"
+
+            # 解压到项目目录
+            cd $PROJECT_DIR
+            tar -xzf /tmp/anheyu-docs-latest.tar.gz
+
+            # 设置权限
+            chown -R www:www $PROJECT_DIR
+            chmod -R 755 $PROJECT_DIR
+
+            # 安装所有依赖（构建需要devDependencies）
+            echo "📦 Installing all dependencies..."
+            export NODE_ENV=production
+            pnpm install 2>/dev/null || npm install
+
+            # 启动服务
+            echo "🚀 Starting service using Baota script..."
+
+            # 1. 杀死3000端口的占用进程
+            echo "🔪 Killing processes on port 3000..."
+            lsof -ti:3000 | xargs -r kill -9 2>/dev/null || echo "No process found on port 3000"
+
+            # 2. 停止现有的宝塔管理的进程（如果存在）
+            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
+                PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid 2>/dev/null || echo "")
+                if [ ! -z "$PID" ] && kill -0 $PID 2>/dev/null; then
+                    echo "📝 Stopping existing Baota process (PID: $PID)..."
+                    kill -9 $PID 2>/dev/null || echo "Process already stopped"
+                fi
+                rm -f /www/server/nodejs/vhost/pids/anheyu_docs.pid
+            fi
+
+            # 3. 使用宝塔启动脚本启动项目
+            echo "🎯 Running Baota startup script..."
+            sh /www/server/nodejs/vhost/scripts/anheyu_docs.sh
+
+            # 4. 等待服务启动
+            echo "⏳ Waiting for service to start..."
+            sleep 5
+
+            # 清理临时文件
+            rm -f /tmp/anheyu-docs-latest.tar.gz
+
+            echo "✅ Deployment completed successfully!"
+            echo "🌐 Your site should be available at your configured domain"
+
+            # 显示服务状态
+            echo "📊 Checking service status..."
+            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
+                PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid)
+                if kill -0 $PID 2>/dev/null; then
+                    echo "✅ Baota service is running (PID: $PID)"
+                else
+                    echo "⚠️  PID file exists but process is not running"
+                fi
+            else
+                echo "⚠️  No PID file found"
+            fi
+
+      # 10. 健康检查
+      - name: 🏥 Health check
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          script: |
+            echo "🏥 Performing health check..."
+
+            # 等待服务启动
+            sleep 10
+
+            # 检查端口是否监听
+            if netstat -tlnp | grep :3000; then
+              echo "✅ Service is listening on port 3000"
+            else
+              echo "❌ Service is not listening on port 3000"
+              exit 1
+            fi
+
+            # 检查宝塔进程状态
+            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
+              PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid)
+              if kill -0 $PID 2>/dev/null; then
+                echo "✅ Baota process is running (PID: $PID)"
+              else
+                echo "❌ Baota process is not running"
+                exit 1
+              fi
+            else
+              echo "❌ No PID file found"
+              exit 1
+            fi
+
+            echo "🎉 Health check passed! Deployment successful!"

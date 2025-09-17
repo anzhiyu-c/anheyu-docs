@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: 安知鱼
+ * @Date: 2025-09-17 09:44:44
+ * @LastEditTime: 2025-09-17 09:49:05
+ * @LastEditors: 安知鱼
+ */
 import { source } from "@/lib/source";
 import { createFromSource } from "fumadocs-core/search/server";
 import { createTokenizer } from "@orama/tokenizers/mandarin";

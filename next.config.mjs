@@ -1,9 +1,6 @@
 /*
- * @Description:
+ * @Description: 服务端部署模式配置
  * @Author: 安知鱼
- * @Date: 2025-09-08 17:42:53
- * @LastEditTime: 2025-09-13 18:31:33
- * @LastEditors: 安知鱼
  */
 import { createMDX } from "fumadocs-mdx/next";
 
