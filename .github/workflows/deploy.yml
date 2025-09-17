@@ -86,6 +86,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 10m
           script: |
             echo "🚀 Starting deployment..."
 
@@ -129,6 +131,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
+          timeout: 60s
           source: "anheyu-docs-latest.tar.gz"
           target: "/tmp/"
 
@@ -140,6 +143,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 15m
           script: |
             echo "📦 Extracting deployment package..."
 
@@ -210,6 +215,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 5m
           script: |
             echo "🏥 Performing health check..."
 
