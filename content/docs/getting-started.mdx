@@ -195,6 +195,9 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_REDIS_ADDR=anheyu_redis:6379
             volumes:
               - ./data:/anheyu/data
+              - ./themes:/anheyu/themes
+              - ./static:/anheyu/static
+              - ./backup:/anheyu/backup
 
           anheyu_postgresql:
             image: postgres:latest
