@@ -1,4 +1,12 @@
 {
   "title": "文档",
-  "pages": ["index", "getting-started", "configuration", "theming", "article-editor.mdx", "pro.mdx"]
+  "pages": [
+    "index",
+    "getting-started",
+    "configuration",
+    "theming",
+    "theme-development",
+    "article-editor.mdx",
+    "pro.mdx"
+  ]
 }
