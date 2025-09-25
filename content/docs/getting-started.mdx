@@ -167,7 +167,55 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
     将获取到的 docker-compose.yml 文件保存到此目录。
     <Tabs items={['社区版', 'Pro 版']}>
       <Tab value="社区版">
-    将 GitHub 仓库 [docker-compose.yml](https://github.com/anzhiyu-c/anheyu-app/blob/main/docker-compose.yml) 中的 docker-compose.yml 文件保存到服务端。
+        如下是一个包含所有必要服务的社区版 docker-compose.yml 文件示例。将其保存到服务端。
+
+        ```yaml
+        services:
+          anheyu:
+            image: anheyu/anheyu-backend:latest
+            container_name: anheyu-backend
+            depends_on:
+              - anheyu_postgresql
+              - anheyu_redis
+            restart: always
+            ports:
+              - 8091:8091
+            environment:
+              - ANHEYU_DATABASE_TYPE=postgres
+              - ANHEYU_DATABASE_HOST=anheyu_postgresql
+              - ANHEYU_DATABASE_USER=anheyu
+              - ANHEYU_DATABASE_NAME=anheyu
+              - ANHEYU_DATABASE_PORT=5432
+              - ANHEYU_DATABASE_PASSWORD=
+              - ANHEYU_REDIS_ADDR=anheyu_redis:6379
+            volumes:
+              - ./data:/anheyu/data
+              - ./themes:/anheyu/themes
+              - ./static:/anheyu/static
+              - ./backup:/anheyu/backup
+
+          anheyu_postgresql:
+            image: postgres:latest
+            container_name: anheyu_postgresql
+            ports:
+              - "5432:5432"
+            environment:
+              - POSTGRES_USER=anheyu
+              - POSTGRES_DB=anheyu
+              - POSTGRES_HOST_AUTH_METHOD=trust
+            volumes:
+              - database_postgres:/var/lib/postgresql/data
+
+          anheyu_redis:
+            image: redis:latest
+            container_name: anheyu_redis
+            volumes:
+              - redis_data:/data
+
+        volumes:
+          database_postgres:
+          redis_data:
+        ```
       </Tab>
       <Tab value="Pro 版">
         如下是一个包含所有必要服务的 Pro 版 docker-compose.yml 文件示例。将其保存到服务端。
@@ -175,7 +223,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         ```yaml
         services:
           anheyu:
-            image: harbor.anheyu.com/anheyu/pro:latest
+            image: anheyu/pro:latest
             container_name: anheyu-backend
             depends_on:
               anheyu_postgresql:
@@ -193,6 +241,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_DATABASE_PORT=5432
               - ANHEYU_DATABASE_PASSWORD=
               - ANHEYU_REDIS_ADDR=anheyu_redis:6379
+              - ANHEYU_LICENSE_KEY=你的授权密钥
             volumes:
               - ./data:/anheyu/data
               - ./themes:/anheyu/themes
@@ -246,21 +295,15 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
       </Tab>
       <Tab value="Pro 版">
 
-      在 Pro 授权管理面板 点击 获取 Docker 镜像 按钮，并生成一份用于登录 Pro 版本私有镜像仓库的账号，点击获取授权密钥按钮，将获取到的授权密钥保存到 ANHEYU_LICENSE_KEY 环境变量中，然后启动。
+      在 Pro 授权管理面板，点击获取授权密钥按钮，将获取到的授权密钥保存到 ANHEYU_LICENSE_KEY 环境变量中（替换刚刚的`docker-compose.yml`文件里面的`ANHEYU_LICENSE_KEY`值），然后启动。
 
       ```bash
-      # 登录 Pro 版本私有镜像仓库
-      docker login -u 获取到的用户名 -p 获取到的密码 harbor.anheyu.com
-
-      # 设置授权密钥
-      export ANHEYU_LICENSE_KEY=你的授权密钥
-
       # 启动
       docker compose up -d
       ```
 
       <Callout type="warn" title="注意事项">
-        你获取到的容器仓库凭证并非永久有效，如果后续更新拉取镜像时出现凭证过期的情况，请重新获取并登录。
+        以后更新的时候只需要重新拉取最新的镜像就可以了。
       </Callout>
       </Tab>
     </Tabs>
@@ -344,9 +387,6 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           -p 6379:6379 \
           redis:latest
         
-        # 登录 Pro 版本私有镜像仓库
-        docker login -u 获取到的用户名 -p 获取到的密码 harbor.anheyu.com
-        
         # 启动 Anheyu Pro
         docker run -d \
           --name anheyu-pro \
@@ -360,7 +400,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           -e ANHEYU_DATABASE_PASSWORD= \
           -e ANHEYU_REDIS_ADDR=host.docker.internal:6379 \
           -e ANHEYU_LICENSE_KEY=你的授权密钥 \
-          harbor.anheyu.com/anheyu/pro:latest
+          anheyu/pro:latest
         ```
         
         <Callout type="warn" title="Pro 版注意事项">
