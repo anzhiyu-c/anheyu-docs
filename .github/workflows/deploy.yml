@@ -113,23 +113,6 @@ jobs:
               echo "📊 Current backup count: $BACKUP_COUNT"
             fi
 
-            # 停止可能在运行的旧服务（如果之前是 Next.js 服务）
-            echo "⏹️ Stopping any existing Next.js service..."
-            pm2 stop dev-anheyu-com 2>/dev/null || echo "No PM2 service found"
-
-            # 杀死可能占用端口的进程
-            lsof -ti:3000 | xargs -r kill -9 2>/dev/null || echo "No process found on port 3000"
-
-            # 停止宝塔管理的进程（如果存在）
-            if [ -f "/www/server/nodejs/vhost/pids/dev_anheyu_com.pid" ]; then
-                PID=$(cat /www/server/nodejs/vhost/pids/dev_anheyu_com.pid 2>/dev/null || echo "")
-                if [ ! -z "$PID" ] && kill -0 $PID 2>/dev/null; then
-                    echo "📝 Stopping existing Baota process (PID: $PID)..."
-                    kill -9 $PID 2>/dev/null || echo "Process already stopped"
-                fi
-                rm -f /www/server/nodejs/vhost/pids/dev_anheyu_com.pid
-            fi
-
             echo "✅ Environment prepared for static deployment"
 
       # 8. 上传静态文件包
@@ -186,11 +169,46 @@ jobs:
 
             # 验证压缩包是否存在
             echo "🔍 Checking deployment package..."
+            echo "📂 Package files in /tmp/:"
+            ls -la /tmp/dev-anheyu-com-static* 2>/dev/null || echo "No package files found"
+
             if [ ! -f "/tmp/dev-anheyu-com-static-latest.tar.gz" ]; then
-              echo "❌ Deployment package not found!"
-              echo "📂 Files in /tmp/:"
-              ls -la /tmp/dev-anheyu-com-static*
-              exit 1
+              echo "❌ Deployment package symlink not found!"
+              # 尝试找到实际的tar.gz文件
+              ACTUAL_FILE=$(ls /tmp/dev-anheyu-com-static-*.tar.gz 2>/dev/null | head -1)
+              if [ -n "$ACTUAL_FILE" ]; then
+                echo "📁 Found actual package file: $ACTUAL_FILE"
+                echo "🔗 Creating symlink..."
+                ln -sf "$(basename "$ACTUAL_FILE")" "/tmp/dev-anheyu-com-static-latest.tar.gz"
+                if [ -f "/tmp/dev-anheyu-com-static-latest.tar.gz" ]; then
+                  echo "✅ Symlink created successfully"
+                else
+                  echo "❌ Failed to create symlink"
+                  exit 1
+                fi
+              else
+                echo "❌ No deployment package found at all!"
+                exit 1
+              fi
+            else
+              # 检查符号链接是否有效
+              if [ ! -e "/tmp/dev-anheyu-com-static-latest.tar.gz" ]; then
+                echo "❌ Deployment package symlink is broken!"
+                # 尝试修复符号链接
+                ACTUAL_FILE=$(ls /tmp/dev-anheyu-com-static-*.tar.gz 2>/dev/null | head -1)
+                if [ -n "$ACTUAL_FILE" ]; then
+                  echo "📁 Found actual package file: $ACTUAL_FILE"
+                  echo "🔗 Fixing symlink..."
+                  rm -f "/tmp/dev-anheyu-com-static-latest.tar.gz"
+                  ln -sf "$(basename "$ACTUAL_FILE")" "/tmp/dev-anheyu-com-static-latest.tar.gz"
+                  echo "✅ Symlink fixed"
+                else
+                  echo "❌ No actual package file found!"
+                  exit 1
+                fi
+              else
+                echo "✅ Deployment package found"
+              fi
             fi
 
             echo "📦 Package size: $(ls -lh /tmp/dev-anheyu-com-static-latest.tar.gz | awk '{print $5}')"
