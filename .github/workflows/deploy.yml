@@ -95,22 +95,6 @@ jobs:
               echo "📊 Current backup count: $BACKUP_COUNT"
             fi
 
-            # 停止可能在运行的旧服务（如果之前是 Next.js 服务）
-            echo "⏹️ Stopping any existing Next.js service..."
-            pm2 stop anheyu-docs 2>/dev/null || echo "No PM2 service found"
-
-            # 杀死可能占用端口的进程
-            lsof -ti:3000 | xargs -r kill -9 2>/dev/null || echo "No process found on port 3000"
-
-            # 停止宝塔管理的进程（如果存在）
-            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
-                PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid 2>/dev/null || echo "")
-                if [ ! -z "$PID" ] && kill -0 $PID 2>/dev/null; then
-                    echo "📝 Stopping existing Baota process (PID: $PID)..."
-                    kill -9 $PID 2>/dev/null || echo "Process already stopped"
-                fi
-                rm -f /www/server/nodejs/vhost/pids/anheyu_docs.pid
-            fi
 
             echo "✅ Environment prepared for static deployment"
 
