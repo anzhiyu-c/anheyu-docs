@@ -78,8 +78,9 @@ jobs:
             BACKUP_DIR="/www/backup/anheyu-docs"
             TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
-            # 创建备份目录
+            # 创建必要目录
             mkdir -p $BACKUP_DIR
+            mkdir -p $PROJECT_DIR
 
             # 备份当前版本
             if [ -d "$PROJECT_DIR" ] && [ "$(ls -A $PROJECT_DIR)" ]; then
@@ -92,6 +93,23 @@ jobs:
               ls -t backup-*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm -f 2>/dev/null || echo "No old backups to clean"
               BACKUP_COUNT=$(ls -1 backup-*.tar.gz 2>/dev/null | wc -l || echo "0")
               echo "📊 Current backup count: $BACKUP_COUNT"
+            fi
+
+            # 停止可能在运行的旧服务（如果之前是 Next.js 服务）
+            echo "⏹️ Stopping any existing Next.js service..."
+            pm2 stop anheyu-docs 2>/dev/null || echo "No PM2 service found"
+
+            # 杀死可能占用端口的进程
+            lsof -ti:3000 | xargs -r kill -9 2>/dev/null || echo "No process found on port 3000"
+
+            # 停止宝塔管理的进程（如果存在）
+            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
+                PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid 2>/dev/null || echo "")
+                if [ ! -z "$PID" ] && kill -0 $PID 2>/dev/null; then
+                    echo "📝 Stopping existing Baota process (PID: $PID)..."
+                    kill -9 $PID 2>/dev/null || echo "Process already stopped"
+                fi
+                rm -f /www/server/nodejs/vhost/pids/anheyu_docs.pid
             fi
 
             echo "✅ Environment prepared for static deployment"
@@ -123,6 +141,20 @@ jobs:
 
             PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
 
+            # 确保目标目录存在
+            echo "📁 Ensuring target directory exists..."
+            mkdir -p $PROJECT_DIR
+
+            # 检查上传的压缩包是否存在
+            if [ ! -f "/tmp/anheyu-docs-static-latest.tar.gz" ]; then
+              echo "❌ Static package not found at /tmp/anheyu-docs-static-latest.tar.gz"
+              echo "📂 Files in /tmp/:"
+              ls -la /tmp/anheyu-docs-static*
+              exit 1
+            fi
+
+            echo "✅ Found static package: $(ls -lh /tmp/anheyu-docs-static-latest.tar.gz)"
+
             # 清空目标目录（保留隐藏文件如 .htaccess）
             echo "🧹 Cleaning target directory..."
             find $PROJECT_DIR -mindepth 1 -not -path '*/\.*' -delete 2>/dev/null || echo "Directory already clean"
@@ -130,7 +162,15 @@ jobs:
             # 解压静态文件到项目目录
             echo "📦 Extracting static files..."
             cd $PROJECT_DIR
-            tar -xzf /tmp/anheyu-docs-static-latest.tar.gz
+
+            if tar -xzf /tmp/anheyu-docs-static-latest.tar.gz; then
+              echo "✅ Successfully extracted static files"
+              echo "📂 Extracted files:"
+              ls -la $PROJECT_DIR | head -10
+            else
+              echo "❌ Failed to extract static files"
+              exit 1
+            fi
 
             # 设置正确的权限
             echo "🔧 Setting permissions..."
@@ -158,3 +198,86 @@ jobs:
             [ -f "$PROJECT_DIR/index.html" ] && echo "✅ index.html found" || echo "❌ index.html missing"
             [ -f "$PROJECT_DIR/static.json" ] && echo "✅ static.json found" || echo "❌ static.json missing"
             [ -d "$PROJECT_DIR/_next" ] && echo "✅ _next directory found" || echo "❌ _next directory missing"
+
+      # 10. 静态站点验证
+      - name: 🏥 Static site verification
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: ${{ secrets.SERVER_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 5m
+          script: |
+            echo "🏥 Performing static site verification..."
+
+            PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
+
+            # 检查必要文件是否存在
+            echo "🔍 Checking essential files..."
+
+            MISSING_FILES=0
+
+            if [ ! -f "$PROJECT_DIR/index.html" ]; then
+              echo "❌ index.html is missing"
+              MISSING_FILES=$((MISSING_FILES + 1))
+            else
+              echo "✅ index.html exists"
+            fi
+
+            if [ ! -f "$PROJECT_DIR/static.json" ]; then
+              echo "❌ static.json is missing"
+              MISSING_FILES=$((MISSING_FILES + 1))
+            else
+              echo "✅ static.json exists"
+              echo "📊 Search index size: $(stat -f%z "$PROJECT_DIR/static.json" 2>/dev/null || stat -c%s "$PROJECT_DIR/static.json") bytes"
+            fi
+
+            if [ ! -d "$PROJECT_DIR/_next" ]; then
+              echo "❌ _next directory is missing"
+              MISSING_FILES=$((MISSING_FILES + 1))
+            else
+              echo "✅ _next directory exists"
+            fi
+
+            # 检查文件权限
+            echo "🔒 Checking file permissions..."
+            PERM_ISSUES=0
+
+            if [ ! -r "$PROJECT_DIR/index.html" ]; then
+              echo "❌ index.html is not readable"
+              PERM_ISSUES=$((PERM_ISSUES + 1))
+            else
+              echo "✅ index.html is readable"
+            fi
+
+            # 检查目录结构
+            echo "📁 Directory structure:"
+            ls -la $PROJECT_DIR | head -10
+
+            # 统计信息
+            TOTAL_FILES=$(find $PROJECT_DIR -type f | wc -l)
+            TOTAL_SIZE=$(du -sh $PROJECT_DIR | cut -f1)
+
+            echo "📊 Final deployment statistics:"
+            echo "   📂 Total files: $TOTAL_FILES"
+            echo "   📦 Total size: $TOTAL_SIZE"
+            echo "   📁 Location: $PROJECT_DIR"
+
+            # 最终验证
+            if [ $MISSING_FILES -eq 0 ] && [ $PERM_ISSUES -eq 0 ]; then
+              echo "🎉 Static site verification passed!"
+              echo "✅ All essential files are present and accessible"
+              echo "🌐 Your static documentation site is ready!"
+              echo ""
+              echo "💡 Next steps:"
+              echo "   - Configure your web server (Nginx/Apache) to serve static files"
+              echo "   - Ensure your domain points to $PROJECT_DIR"
+              echo "   - Test the site in your browser"
+            else
+              echo "❌ Static site verification failed!"
+              echo "   Missing files: $MISSING_FILES"
+              echo "   Permission issues: $PERM_ISSUES"
+              exit 1
+            fi
