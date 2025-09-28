@@ -6,7 +6,7 @@
  * @LastEditors: 安知鱼
  */
 import "@/app/global.css";
-import { RootProvider } from "fumadocs-ui/provider";
+import { Provider } from "@/components/provider";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 
@@ -44,19 +44,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body>
-        <RootProvider
-          search={{
-            enabled: true,
-            hotKey: [
-              {
-                display: "⌘K",
-                key: "k",
-              },
-            ],
-          }}
-        >
-          {children}
-        </RootProvider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

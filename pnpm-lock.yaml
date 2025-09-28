@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@orama/orama':
+        specifier: ^3.1.14
+        version: 3.1.14
       '@orama/stopwords':
         specifier: ^3.1.13
         version: 3.1.13
@@ -525,6 +528,10 @@ packages:
 
   '@orama/orama@3.1.13':
     resolution: {integrity: sha512-O0hdKt4K31i8fpq8Bw5RfdPVAqm0EdduBUcluPo2MRcfCOwUEf5JlnvRhf/J0ezOYOD8jQ/LumYZxOVi/XK/BA==}
+    engines: {node: '>= 20.0.0'}
+
+  '@orama/orama@3.1.14':
+    resolution: {integrity: sha512-Iq4RxYC7y0pA/hLgcUGpYYs5Vze4qNmJk0Qi1uIrg2bHGpm6A06nbjWcH9h4HQsddkDFFlanLj/zYBH3Sxdb4w==}
     engines: {node: '>= 20.0.0'}
 
   '@orama/stopwords@3.1.13':
@@ -3414,6 +3421,8 @@ snapshots:
 
   '@orama/orama@3.1.13': {}
 
+  '@orama/orama@3.1.14': {}
+
   '@orama/stopwords@3.1.13': {}
 
   '@orama/tokenizers@3.1.13':
@@ -4830,7 +4839,7 @@ snapshots:
   fumadocs-core@15.7.10(@types/react@19.1.13)(next@15.5.2(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1):
     dependencies:
       '@formatjs/intl-localematcher': 0.6.1
-      '@orama/orama': 3.1.13
+      '@orama/orama': 3.1.14
       '@shikijs/rehype': 3.12.2
       '@shikijs/transformers': 3.12.2
       github-slugger: 2.0.0
