@@ -195,7 +195,10 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ./backup:/anheyu/backup
 
           anheyu_postgresql:
-            image: postgres:latest
+            # Best practice: Pin to major version.
+            # NOTE: For major version jumps:
+            # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
+            image: postgres:17
             container_name: anheyu_postgresql
             ports:
               - "5432:5432"
@@ -249,7 +252,10 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ./backup:/anheyu/backup
 
           anheyu_postgresql:
-            image: postgres:latest
+            # Best practice: Pin to major version.
+            # NOTE: For major version jumps:
+            # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
+            image: postgres:17
             container_name: anheyu_postgresql
             ports:
               - "5432:5432"
@@ -379,7 +385,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           -e POSTGRES_DB=anheyu \
           -e POSTGRES_HOST_AUTH_METHOD=trust \
           -p 5432:5432 \
-          postgres:latest
+          postgres:17
         
         # 启动 Redis
         docker run -d \
