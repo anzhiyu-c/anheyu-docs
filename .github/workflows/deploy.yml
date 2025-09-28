@@ -44,19 +44,38 @@ jobs:
           # 检查构建产物
           if [ ! -d "out" ]; then
             echo "❌ Build output directory 'out' not found!"
+            echo "📂 Available directories:"
+            ls -la
             exit 1
           fi
 
           echo "📁 Contents of out directory:"
           ls -la out/
 
+          # 检查关键文件
+          echo "🔍 Checking key files in out directory:"
+          [ -f "out/index.html" ] && echo "✅ index.html found" || echo "❌ index.html missing"
+          [ -f "out/static.json" ] && echo "✅ static.json found" || echo "❌ static.json missing"
+          [ -d "out/_next" ] && echo "✅ _next directory found" || echo "❌ _next directory missing"
+
+          # 统计文件数量
+          FILE_COUNT=$(find out -type f | wc -l)
+          echo "📊 Total files in out directory: $FILE_COUNT"
+
           # 压缩静态文件
+          echo "📦 Creating deployment package..."
           cd out
-          tar -czf ../anheyu-docs-static-$(date +%Y%m%d-%H%M%S).tar.gz .
+          tar -czf ../dev-anheyu-com-static-$(date +%Y%m%d-%H%M%S).tar.gz .
           cd ..
 
           # 创建最新版本的软链接
-          ln -sf anheyu-docs-static-$(date +%Y%m%d-%H%M%S).tar.gz anheyu-docs-static-latest.tar.gz
+          ln -sf dev-anheyu-com-static-$(date +%Y%m%d-%H%M%S).tar.gz dev-anheyu-com-static-latest.tar.gz
+
+          # 验证压缩包
+          echo "🔍 Verifying deployment package:"
+          echo "📦 Package size: $(ls -lh dev-anheyu-com-static-latest.tar.gz | awk '{print $5}')"
+          echo "📂 Package contents (first 10 files):"
+          tar -tzf dev-anheyu-com-static-latest.tar.gz | head -10
 
           echo "✅ Static deployment package created successfully"
 
@@ -74,8 +93,8 @@ jobs:
             echo "🚀 Starting SSG deployment..."
 
             # 设置变量
-            PROJECT_DIR="/www/wwwroot/anheyu-docs"
-            BACKUP_DIR="/www/backup/anheyu-docs"
+            PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
+            BACKUP_DIR="/www/backup/dev.anheyu.com"
             TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
             # 创建备份目录
@@ -96,19 +115,19 @@ jobs:
 
             # 停止可能在运行的旧服务（如果之前是 Next.js 服务）
             echo "⏹️ Stopping any existing Next.js service..."
-            pm2 stop anheyu-docs 2>/dev/null || echo "No PM2 service found"
+            pm2 stop dev-anheyu-com 2>/dev/null || echo "No PM2 service found"
 
             # 杀死可能占用端口的进程
             lsof -ti:3000 | xargs -r kill -9 2>/dev/null || echo "No process found on port 3000"
 
             # 停止宝塔管理的进程（如果存在）
-            if [ -f "/www/server/nodejs/vhost/pids/anheyu_docs.pid" ]; then
-                PID=$(cat /www/server/nodejs/vhost/pids/anheyu_docs.pid 2>/dev/null || echo "")
+            if [ -f "/www/server/nodejs/vhost/pids/dev_anheyu_com.pid" ]; then
+                PID=$(cat /www/server/nodejs/vhost/pids/dev_anheyu_com.pid 2>/dev/null || echo "")
                 if [ ! -z "$PID" ] && kill -0 $PID 2>/dev/null; then
                     echo "📝 Stopping existing Baota process (PID: $PID)..."
                     kill -9 $PID 2>/dev/null || echo "Process already stopped"
                 fi
-                rm -f /www/server/nodejs/vhost/pids/anheyu_docs.pid
+                rm -f /www/server/nodejs/vhost/pids/dev_anheyu_com.pid
             fi
 
             echo "✅ Environment prepared for static deployment"
@@ -122,7 +141,7 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
           timeout: 60s
-          source: "anheyu-docs-static-latest.tar.gz"
+          source: "dev-anheyu-com-static-latest.tar.gz"
           target: "/tmp/"
 
       # 9. 部署静态文件
@@ -138,16 +157,76 @@ jobs:
           script: |
             echo "📦 Deploying static files..."
 
-            PROJECT_DIR="/www/wwwroot/anheyu-docs"
+            PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
 
-            # 清空目标目录（保留隐藏文件如 .htaccess）
+            # 显示部署前的目录状态
+            echo "📂 Directory status before deployment:"
+            ls -la $PROJECT_DIR 2>/dev/null || echo "Directory does not exist"
+
+            # 确保目录存在
+            mkdir -p $PROJECT_DIR
+
+            # 完全清空目标目录（保留 .htaccess 文件）
             echo "🧹 Cleaning target directory..."
-            find $PROJECT_DIR -mindepth 1 -not -path '*/\.*' -delete 2>/dev/null || echo "Directory already clean"
+            if [ -f "$PROJECT_DIR/.htaccess" ]; then
+              echo "💾 Backing up .htaccess..."
+              cp "$PROJECT_DIR/.htaccess" "/tmp/.htaccess.backup" 2>/dev/null || echo "No .htaccess to backup"
+            fi
+
+            # 删除所有内容
+            rm -rf $PROJECT_DIR/* 2>/dev/null || echo "No files to remove"
+            rm -rf $PROJECT_DIR/.* 2>/dev/null || echo "No hidden files to remove"
+
+            # 恢复 .htaccess
+            if [ -f "/tmp/.htaccess.backup" ]; then
+              echo "🔄 Restoring .htaccess..."
+              cp "/tmp/.htaccess.backup" "$PROJECT_DIR/.htaccess"
+              rm -f "/tmp/.htaccess.backup"
+            fi
+
+            # 验证压缩包是否存在
+            echo "🔍 Checking deployment package..."
+            if [ ! -f "/tmp/dev-anheyu-com-static-latest.tar.gz" ]; then
+              echo "❌ Deployment package not found!"
+              echo "📂 Files in /tmp/:"
+              ls -la /tmp/dev-anheyu-com-static*
+              exit 1
+            fi
+
+            echo "📦 Package size: $(ls -lh /tmp/dev-anheyu-com-static-latest.tar.gz | awk '{print $5}')"
+
+            # 验证压缩包内容
+            echo "🔍 Verifying package contents:"
+            echo "📂 First 10 files in package:"
+            tar -tzf /tmp/dev-anheyu-com-static-latest.tar.gz | head -10
+
+            # 检查关键文件是否在压缩包中
+            if tar -tzf /tmp/dev-anheyu-com-static-latest.tar.gz | grep -q "^index.html$"; then
+              echo "✅ index.html found in package"
+            else
+              echo "❌ index.html not found in package"
+            fi
+
+            if tar -tzf /tmp/dev-anheyu-com-static-latest.tar.gz | grep -q "^static.json$"; then
+              echo "✅ static.json found in package"
+            else
+              echo "❌ static.json not found in package"
+            fi
 
             # 解压静态文件到项目目录
             echo "📦 Extracting static files..."
             cd $PROJECT_DIR
-            tar -xzf /tmp/anheyu-docs-static-latest.tar.gz
+            tar -xzf /tmp/dev-anheyu-com-static-latest.tar.gz
+
+            # 验证解压结果
+            echo "📂 Files after extraction:"
+            ls -la $PROJECT_DIR | head -15
+
+            # 再次检查关键文件
+            echo "🔍 Verifying extracted files:"
+            [ -f "$PROJECT_DIR/index.html" ] && echo "✅ index.html extracted successfully" || echo "❌ index.html not found after extraction"
+            [ -f "$PROJECT_DIR/static.json" ] && echo "✅ static.json extracted successfully" || echo "❌ static.json not found after extraction"
+            [ -d "$PROJECT_DIR/_next" ] && echo "✅ _next directory extracted successfully" || echo "❌ _next directory not found after extraction"
 
             # 设置正确的权限
             echo "🔧 Setting permissions..."
@@ -159,7 +238,7 @@ jobs:
             find $PROJECT_DIR -type d -exec chmod 755 {} \;
 
             # 清理临时文件
-            rm -f /tmp/anheyu-docs-static-latest.tar.gz
+            rm -f /tmp/dev-anheyu-com-static-latest.tar.gz
 
             echo "✅ Static site deployment completed successfully!"
             echo "🌐 Your static site is now available at your configured domain"
@@ -189,7 +268,7 @@ jobs:
           script: |
             echo "🏥 Performing static site verification..."
 
-            PROJECT_DIR="/www/wwwroot/anheyu-docs"
+            PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
 
             # 检查必要文件是否存在
             echo "🔍 Checking essential files..."
