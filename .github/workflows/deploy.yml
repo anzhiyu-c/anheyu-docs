@@ -52,11 +52,8 @@ jobs:
 
           # 压缩静态文件
           cd out
-          tar -czf ../anheyu-docs-static-$(date +%Y%m%d-%H%M%S).tar.gz .
+          tar -czf ../anheyu-docs-static-latest.tar.gz .
           cd ..
-
-          # 创建最新版本的软链接
-          ln -sf anheyu-docs-static-$(date +%Y%m%d-%H%M%S).tar.gz anheyu-docs-static-latest.tar.gz
 
           echo "✅ Static deployment package created successfully"
 
@@ -75,25 +72,9 @@ jobs:
 
             # 设置变量
             PROJECT_DIR="/www/wwwroot/dev.anheyu.com"
-            BACKUP_DIR="/www/backup/anheyu-docs"
-            TIMESTAMP=$(date +%Y%m%d-%H%M%S)
 
-            # 创建必要目录
-            mkdir -p $BACKUP_DIR
+            # 创建目标目录
             mkdir -p $PROJECT_DIR
-
-            # 备份当前版本
-            if [ -d "$PROJECT_DIR" ] && [ "$(ls -A $PROJECT_DIR)" ]; then
-              echo "📦 Creating backup of current static files..."
-              tar -czf $BACKUP_DIR/backup-$TIMESTAMP.tar.gz -C $PROJECT_DIR . 2>/dev/null || echo "Backup failed, continuing..."
-              
-              # 清理旧备份，只保留最新的5份
-              echo "🧹 Cleaning old backups (keeping only 5 most recent)..."
-              cd $BACKUP_DIR
-              ls -t backup-*.tar.gz 2>/dev/null | tail -n +6 | xargs -r rm -f 2>/dev/null || echo "No old backups to clean"
-              BACKUP_COUNT=$(ls -1 backup-*.tar.gz 2>/dev/null | wc -l || echo "0")
-              echo "📊 Current backup count: $BACKUP_COUNT"
-            fi
 
 
             echo "✅ Environment prepared for static deployment"
