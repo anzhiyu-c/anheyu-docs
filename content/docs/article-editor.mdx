@@ -43,6 +43,205 @@ const hello = "Hello World";
 ```
 ````
 
+### 指定默认激活的标签
+
+```markdown
+:::tabs active=2
+
+== tab 第一个标签
+内容 1
+
+== tab 第二个标签
+内容 2（默认激活）
+
+== tab 第三个标签
+内容 3
+
+:::
+```
+
+## 📁 折叠框（Folding）
+
+折叠框可以隐藏长内容，用户点击标题即可展开查看。
+
+![折叠框](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/6abc3b00fd4fb8e4e568fa77d990e8eb_3007436322575712193.png?x-oss-process=image/format,avif)
+
+### 基础用法
+
+```markdown
+:::folding
+折叠框标题
+这是折叠框的内容，默认是收起状态。
+支持 **Markdown** 语法。
+:::
+```
+
+### 默认展开
+
+```markdown
+:::folding open
+默认展开的折叠框
+这个折叠框默认是展开状态。
+:::
+```
+
+### 自定义颜色
+
+```markdown
+:::folding #FF6B9D
+粉色折叠框
+使用十六进制颜色值自定义边框和标题背景色。
+:::
+```
+
+```markdown
+:::folding open #42b983
+绿色折叠框（默认展开）
+同时设置展开状态和自定义颜色。
+:::
+```
+
+## 🙈 隐藏内容（Hidden）
+
+![隐藏内容](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d1dcf37b386f6d0f5f0e81167f54d5b4_8604438385275234669.png?x-oss-process=image/format,avif)
+
+### 块级隐藏内容
+
+```markdown
+:::hidden
+这是默认的隐藏内容，点击"查看隐藏内容"按钮后显示。
+支持 **Markdown** 语法。
+:::
+```
+
+### 自定义按钮文字
+
+```markdown
+:::hidden display=点击查看答案
+这是一道题目的答案。
+:::
+```
+
+### 自定义按钮颜色
+
+```markdown
+:::hidden display=查看彩蛋 bg=#FF6B9D color=#fff
+这是一个彩蛋内容！
+:::
+```
+
+### 行内隐藏内容
+
+```markdown
+这是一段文字，{hide display=查看}这部分内容被隐藏了{/hide}，点击按钮查看。
+
+自定义颜色：{hide display=答案 bg=#42b983 color=#fff}正确答案是 42{/hide}
+```
+
+## 🔘 按钮（Button）
+
+![按钮](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/23e5740549c66e682c49a1e3d7378bb3_352757347513739428.png?x-oss-process=image/format,avif)
+
+### 基础按钮
+
+```markdown
+{btn url=https://blog.anheyu.com text=访问博客}{/btn}
+```
+
+### 自定义图标
+
+```markdown
+{btn url=https://github.com text=GitHub icon=anzhiyu-icon-github-line}{/btn}
+```
+
+### 按钮颜色
+
+支持的颜色：`blue`、`pink`、`red`、`purple`、`orange`、`green`
+
+```markdown
+{btn url=# text=蓝色按钮 color=blue}{/btn}
+{btn url=# text=粉色按钮 color=pink}{/btn}
+{btn url=# text=红色按钮 color=red}{/btn}
+```
+
+### 描边样式
+
+```markdown
+{btn url=# text=描边按钮 style=outline color=blue}{/btn}
+```
+
+### 更大尺寸
+
+```markdown
+{btn url=# text=大按钮 size=larger color=blue}{/btn}
+```
+
+### 块级布局
+
+```markdown
+{btn url=# text=块级按钮 layout=block}{/btn}
+{btn url=# text=居中按钮 layout=block position=center}{/btn}
+{btn url=# text=右对齐按钮 layout=block position=right}{/btn}
+```
+
+### 组合示例
+
+```markdown
+{btn url=https://blog.anheyu.com text=访问博客 icon=anzhiyu-icon-link color=blue size=larger layout=block position=center}{/btn}
+```
+
+## 🎨 行内样式
+
+![行内样式](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d9532ec1975ea67f58437c39028fe330_2717735974309845681.png?x-oss-process=image/format,avif)
+
+### 下划线
+
+```markdown
+{u}这是下划线文字{/u}
+
+{u color=#FF6B9D}这是彩色下划线{/u}
+```
+
+### 着重号
+
+```markdown
+{emp}这是着重号文字{/emp}
+
+{emp color=#42b983}这是彩色着重号{/emp}
+```
+
+### 波浪线
+
+```markdown
+{wavy}这是波浪线文字{/wavy}
+
+{wavy color=#FF6B9D}这是彩色波浪线{/wavy}
+```
+
+### 删除线（自定义样式）
+
+```markdown
+{del}这是删除线文字{/del}
+
+{del color=#999}这是灰色删除线{/del}
+```
+
+### 键盘样式
+
+```markdown
+按 {kbd}Ctrl{/kbd} + {kbd}S{/kbd} 保存文件
+
+{kbd color=#42b983}Enter{/kbd}
+```
+
+### 密码样式
+
+```markdown
+密码是：{psw}password123{/psw}
+
+{psw color=#000}hidden-text{/psw}
+```
+
 ## 🐶 标题
 
 # 我是 h1 标题
