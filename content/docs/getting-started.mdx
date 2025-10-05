@@ -4,6 +4,15 @@ description: 学习如何快速开始使用 Anheyu
 date: 2025-09-14
 ---
 
+## Redis 可选说明
+
+<Callout type="info" title="Redis 是可选的">
+  Anheyu 支持 **Redis 自动降级功能**，所有安装方式中 Redis 都是可选的： - ✅ **使用
+  Redis（推荐生产环境）**：获得更好的搜索性能、精确的访客统计、支持分布式部署 - ✅ **不使用
+  Redis**：自动降级到内存缓存，所有核心功能正常使用，适合单机部署和小型应用 **如何选择？** -
+  小型站点、测试环境：不需要配置 Redis - 生产环境、大流量站点：推荐配置 Redis 无论选择哪种方式，Anheyu 都能正常运行！
+</Callout>
+
 ## 安装方式对比
 
 Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署方案：
@@ -143,7 +152,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
 
       **核心服务：**
       - 🚀 **Anheyu 主程序** - 提供完整的 Web 服务和 API
-      - 💾 **Redis** - 缓存服务，提升系统性能和会话管理
+      - 💾 **Redis（可选）** - 缓存服务，提升系统性能。如不配置会自动降级到内存缓存
       - 🗄️ **PostgreSQL 数据库** - 主数据存储，支持复杂查询和事务
 
       **多媒体处理组件：**
@@ -176,6 +185,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             container_name: anheyu-backend
             depends_on:
               - anheyu_postgresql
+              # Redis 是可选的，如果不需要可以注释掉下面这行
               - anheyu_redis
             restart: always
             ports:
@@ -187,6 +197,9 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_DATABASE_NAME=anheyu
               - ANHEYU_DATABASE_PORT=5432
               - ANHEYU_DATABASE_PASSWORD=
+              # Redis 配置（可选）
+              # 如果想使用 Redis，保持下面这行；如果不想使用，注释掉即可
+              # 不配置时应用会自动降级到内存缓存
               - ANHEYU_REDIS_ADDR=anheyu_redis:6379
             volumes:
               - ./data:/anheyu/data
@@ -209,6 +222,8 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             volumes:
               - database_postgres:/var/lib/postgresql/data
 
+          # Redis 服务（可选）
+          # 如果不需要 Redis，可以注释掉整个 anheyu_redis 服务
           anheyu_redis:
             image: redis:latest
             container_name: anheyu_redis
@@ -231,6 +246,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             depends_on:
               anheyu_postgresql:
                 condition: service_healthy
+              # Redis 是可选的，如果不需要可以注释掉下面的配置
               anheyu_redis:
                 condition: service_healthy
             restart: always
@@ -243,6 +259,9 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_DATABASE_NAME=anheyu
               - ANHEYU_DATABASE_PORT=5432
               - ANHEYU_DATABASE_PASSWORD=
+              # Redis 配置（可选）
+              # 如果想使用 Redis，保持下面这行；如果不想使用，注释掉即可
+              # 不配置时应用会自动降级到内存缓存
               - ANHEYU_REDIS_ADDR=anheyu_redis:6379
               - ANHEYU_LICENSE_KEY=你的授权密钥
             volumes:
@@ -271,6 +290,8 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               timeout: 5s
               retries: 5
 
+          # Redis 服务（可选）
+          # 如果不需要 Redis，可以注释掉整个 anheyu_redis 服务
           anheyu_redis:
             image: redis:latest
             container_name: anheyu_redis
@@ -342,16 +363,18 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
     
     <Tabs items={['社区版', 'Pro 版']}>
       <Tab value="社区版">
-        社区版需要 Redis 支持，建议先启动 Redis：
+        社区版 Docker 部署有两种方式：使用 Redis（推荐）或不使用 Redis
+        
+        **方式 1：使用 Redis（推荐生产环境）**
         
         ```bash
-        # 启动 Redis (必需)
+        # 启动 Redis
         docker run -d \
           --name anheyu-redis \
           -p 6379:6379 \
           redis:latest
         
-        # 启动 Anheyu 社区版
+        # 启动 Anheyu（使用 Redis）
         docker run -d \
           --name anheyu-app \
           -p 8091:8091 \
@@ -362,20 +385,39 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           anheyu/anheyu-backend:latest
         ```
         
+        **方式 2：不使用 Redis（自动降级到内存缓存）**
+        
+        ```bash
+        # 启动 Anheyu（不配置 Redis）
+        docker run -d \
+          --name anheyu-app \
+          -p 8091:8091 \
+          -v ~/anheyu/data:/anheyu/data \
+          -e ANHEYU_DATABASE_TYPE=sqlite \
+          -e ANHEYU_DATABASE_PATH=/anheyu/data/anheyu.db \
+          anheyu/anheyu-backend:latest
+        ```
+        
         <Callout type="info" title="环境变量说明">
           - `ANHEYU_DATABASE_TYPE`: 数据库类型，社区版默认使用 sqlite
           - `ANHEYU_DATABASE_PATH`: SQLite 数据库文件路径
-          - `ANHEYU_REDIS_ADDR`: Redis 服务器地址（必需配置）
+          - `ANHEYU_REDIS_ADDR`: Redis 服务器地址（**可选**，不配置则自动使用内存缓存）
           - `-v ~/anheyu/data:/anheyu/data`: 数据持久化挂载
         </Callout>
         
-        <Callout type="warn" title="Redis 依赖">
-          Anheyu 应用必须使用 Redis，用于缓存和会话管理。请确保 Redis 服务正常运行。
+        <Callout type="info" title="Redis 是可选的">
+          Anheyu 支持 Redis 自动降级功能：
+          - **使用 Redis**: 获得更好的搜索性能、精确的访客统计、支持分布式部署
+          - **不使用 Redis**: 自动降级到内存缓存，适合单机部署和小型应用
+          
+          核心功能在两种模式下都能正常使用。
         </Callout>
       </Tab>
       
       <Tab value="Pro 版">
-        Pro 版需要外部数据库和 Redis 支持，必须先启动 PostgreSQL 和 Redis：
+        Pro 版需要外部数据库支持，Redis 是可选的：
+        
+        **方式 1：使用 Redis（推荐生产环境）**
         
         ```bash
         # 启动 PostgreSQL
@@ -393,7 +435,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           -p 6379:6379 \
           redis:latest
         
-        # 启动 Anheyu Pro
+        # 启动 Anheyu Pro（使用 Redis）
         docker run -d \
           --name anheyu-pro \
           -p 8091:8091 \
@@ -409,11 +451,44 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
           anheyu/pro:latest
         ```
         
+        **方式 2：不使用 Redis（自动降级到内存缓存）**
+        
+        ```bash
+        # 启动 PostgreSQL
+        docker run -d \
+          --name anheyu-postgres \
+          -e POSTGRES_USER=anheyu \
+          -e POSTGRES_DB=anheyu \
+          -e POSTGRES_HOST_AUTH_METHOD=trust \
+          -p 5432:5432 \
+          postgres:17
+        
+        # 启动 Anheyu Pro（不配置 Redis）
+        docker run -d \
+          --name anheyu-pro \
+          -p 8091:8091 \
+          -v ~/anheyu/data:/anheyu/data \
+          -e ANHEYU_DATABASE_TYPE=postgres \
+          -e ANHEYU_DATABASE_HOST=host.docker.internal \
+          -e ANHEYU_DATABASE_USER=anheyu \
+          -e ANHEYU_DATABASE_NAME=anheyu \
+          -e ANHEYU_DATABASE_PORT=5432 \
+          -e ANHEYU_DATABASE_PASSWORD= \
+          -e ANHEYU_LICENSE_KEY=你的授权密钥 \
+          anheyu/pro:latest
+        ```
+        
         <Callout type="warn" title="Pro 版注意事项">
           - 需要先获取 Pro 版授权和镜像仓库凭证
-          - PostgreSQL 和 Redis 都是必需的依赖服务
+          - PostgreSQL 是必需的依赖服务
+          - Redis 是可选的，不配置会自动降级到内存缓存
           - 使用 `host.docker.internal` 来访问宿主机上的数据库和Redis服务
           - 或者使用 `--network host` 模式运行容器
+        </Callout>
+        
+        <Callout type="info" title="Redis 可选说明">
+          Pro 版所有专属功能（付费内容、密码保护、支付订单等）都不依赖 Redis。
+          Redis 仅用于提升搜索和统计功能的性能，不影响 Pro 核心功能使用。
         </Callout>
       </Tab>
     </Tabs>
@@ -481,11 +556,19 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         Name = anheyu_app
         Debug = false
 
+        # Redis 配置（可选）
+        # 如果不配置或留空 Addr，系统将自动使用内存缓存
+        # 推荐生产环境使用 Redis 以获得更好的性能
         [Redis]
         Addr = localhost:6379
         Password =
         DB = 10
         ```
+
+        <Callout type="info" title="Redis 配置说明">
+          Redis 是可选配置，如果不配置或留空 `Addr` 字段，系统会自动降级到内存缓存。
+          推荐生产环境使用 Redis 以获得更好的搜索性能和访客统计功能。
+        </Callout>
       </Tab>
     </Tabs>
 
@@ -630,6 +713,9 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         Name = anheyu_app
         Debug = false
 
+        # Redis 配置（可选）
+        # 如果不配置或留空 Addr，系统将自动使用内存缓存
+        # 推荐生产环境使用 Redis 以获得更好的性能
         [Redis]
         Addr = localhost:6379
         Password =
@@ -653,6 +739,10 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         Name = anheyu_app
         Debug = false
 
+        # Redis 配置（可选）
+        # PRO 版本继承社区版的 Redis 自动降级功能
+        # 如果不配置或留空 Addr，系统将自动使用内存缓存
+        # 推荐生产环境使用 Redis 以获得更好的性能
         [Redis]
         Addr = localhost:6379
         Password =
@@ -662,7 +752,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         <Callout type="warn" title="Pro 版配置">
           - 确保数据库服务已启动并可连接
           - **必须设置环境变量 ANHEYU_LICENSE_KEY**，包含有效的授权密钥
-          - Redis 为必选配置
+          - Redis 是可选的，不配置会自动降级到内存缓存
         </Callout>
       </Tab>
     </Tabs>
