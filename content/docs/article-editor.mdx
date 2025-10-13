@@ -579,6 +579,135 @@ failure、danger、bug、example、quote、hint、caution、error、attention
 <p style={{textAlign: 'right'}}>右对齐文字</p>
 ```
 
+## 🔗 链接卡片（LinkCard）
+
+链接卡片可以创建美观的链接展示，支持自定义图标、标题和描述信息。
+
+![链接卡片](https://upload-bbs.miyoushe.com/upload/2025/10/13/125766904/linkcard-demo.png?x-oss-process=image/format,avif)
+
+### 基础用法
+
+```markdown
+{linkcard url=https://blog.anheyu.com title=安知鱼 sitename=AnZhiYu}{/linkcard}
+```
+
+### 自定义图标
+
+#### 字体图标
+
+```markdown
+{linkcard url=https://github.com title=GitHub sitename=代码托管平台 icon=anzhiyu-icon-github}{/linkcard}
+```
+
+#### HTTP 图标链接
+
+```markdown
+{linkcard url=https://www.google.com title=Google sitename=搜索引擎 icon=https://www.google.com/favicon.ico}{/linkcard}
+
+{linkcard url=https://github.com title=GitHub sitename=代码托管平台 icon=https://github.githubassets.com/favicons/favicon-dark.png}{/linkcard}
+```
+
+### 自定义提示文本
+
+```markdown
+{linkcard url=https://www.google.com title=Google sitename=搜索引擎 tips=访问搜索引擎}{/linkcard}
+```
+
+### 完整示例
+
+```markdown
+{linkcard url=https://docs.anheyu.com title=AnZhiYu 文档 sitename=AnZhiYu Docs icon=anzhiyu-icon-book tips=查看完整文档}{/linkcard}
+```
+
+### 参数说明
+
+| 参数     | 说明                           | 类型   | 可选值                       | 默认值            |
+| -------- | ------------------------------ | ------ | ---------------------------- | ----------------- |
+| url      | 链接地址                       | string | -                            | #                 |
+| title    | 链接标题                       | string | -                            | 链接标题          |
+| sitename | 网站名称                       | string | -                            | 网站名称          |
+| icon     | 图标（字体图标类名或图片链接） | string | 字体图标类名或 HTTP 图片链接 | anzhiyu-icon-link |
+| tips     | 提示文本                       | string | -                            | 引用站外地址      |
+
+### 注意事项
+
+- 链接会在新标签页中打开
+- 自动添加 `rel="external nofollow noreferrer"` 属性
+- 图标支持两种方式：
+  - **字体图标**：使用 AnZhiYu 图标字体类名（如 `anzhiyu-icon-github`）
+  - **图片图标**：使用 HTTP/HTTPS 图片链接（如网站 favicon）
+- 图片图标会自动调整为 20x20 像素，带圆角效果
+- 卡片具有悬停效果和点击反馈
+- 适合用于推荐相关链接或引用外部资源
+
+## 💡 提示框（Tip）（PRO 版本专享）
+
+Tip 插件可以创建各种样式的提示信息，支持鼠标悬停和点击触发。
+
+![提示框](https://upload-bbs.miyoushe.com/upload/2025/10/13/125766904/tip-demo.png?x-oss-process=image/format,avif)
+
+### 基础用法
+
+```markdown
+{tip text=鼠标悬停提示 content=这是一个基础的悬停提示}{/tip}
+```
+
+### 点击触发
+
+```markdown
+{tip text=点击我查看提示 content=这是一个点击触发的提示 trigger=click}{/tip}
+```
+
+### 不同主题
+
+```markdown
+{tip text=成功提示 content=操作成功完成！ theme=success}{/tip}
+{tip text=信息提示 content=这是一条信息提示 theme=info}{/tip}
+{tip text=警告提示 content=请注意这个警告 theme=warning}{/tip}
+{tip text=错误提示 content=发生了一个错误 theme=error}{/tip}
+{tip text=浅色主题 content=这是浅色主题的提示 theme=light}{/tip}
+```
+
+### 不同位置
+
+```markdown
+{tip text=顶部显示 content=提示显示在顶部 position=top}{/tip}
+{tip text=底部显示 content=提示显示在底部 position=bottom}{/tip}
+{tip text=左侧显示 content=提示显示在左侧 position=left}{/tip}
+{tip text=右侧显示 content=提示显示在右侧 position=right}{/tip}
+```
+
+### 自定义延迟
+
+```markdown
+{tip text=快速显示 content=立即显示的提示 delay=0}{/tip}
+{tip text=延迟显示 content=延迟 500ms 显示的提示 delay=500}{/tip}
+```
+
+### 组合使用
+
+```markdown
+{tip text=复杂提示 content=这是一个成功主题、底部显示、点击触发的提示 theme=success position=bottom trigger=click}{/tip}
+```
+
+### 参数说明
+
+| 参数     | 说明         | 类型          | 可选值                                | 默认值         |
+| -------- | ------------ | ------------- | ------------------------------------- | -------------- |
+| text     | 显示的文本   | string        | -                                     | 提示文本       |
+| content  | 提示内容     | string        | -                                     | 这里是提示内容 |
+| theme    | 主题样式     | string        | dark/light/info/warning/error/success | dark           |
+| position | 显示位置     | string        | top/bottom/left/right                 | top            |
+| trigger  | 触发方式     | string        | hover/click                           | hover          |
+| delay    | 延迟时间(ms) | string/number | -                                     | 300            |
+
+### 注意事项
+
+- 提示文本会显示下划线虚线样式，表示可交互
+- 鼠标悬停时文本颜色会发生变化
+- 点击触发的提示需要再次点击才能关闭
+- 支持响应式设计，在移动端会自动调整样式
+
 ## 📝 编辑器特色功能
 
 ### 🔄 代码折叠
