@@ -190,6 +190,137 @@ const hello = "Hello World";
 {btn url=https://blog.anheyu.com text=访问博客 icon=anzhiyu-icon-link color=blue size=larger layout=block position=center}{/btn}
 ```
 
+## 🎯 按钮组（Btns）
+
+按钮组用于展示多个带有图标和描述的大型按钮，特别适合用于展示团队成员、合作伙伴、友情链接等场景。
+
+![按钮组](https://via.placeholder.com/800x400/4A90E2/ffffff?text=Btns+Plugin+Demo)
+
+### 基础用法
+
+```markdown
+:::btns
+
+icon=anzhiyu-icon-shapes title=张三 url=https://example.com desc=前端工程师
+icon=anzhiyu-icon-shapes title=李四 url=https://example.com desc=后端工程师
+icon=anzhiyu-icon-shapes title=王五 url=https://example.com desc=UI 设计师
+
+:::
+```
+
+### 使用列表格式
+
+```markdown
+:::btns
+
+- icon=anzhiyu-icon-shapes title=张三 url=https://example.com desc=前端工程师
+- icon=anzhiyu-icon-shapes title=李四 url=https://example.com desc=后端工程师
+- icon=anzhiyu-icon-shapes title=王五 url=https://example.com desc=UI 设计师
+
+:::
+```
+
+### 自定义列数
+
+默认为 3 列，可以设置 1-6 列：
+
+```markdown
+:::btns cols=4
+
+- icon=anzhiyu-icon-github-fill title=GitHub url=https://github.com desc=代码托管平台
+- icon=anzhiyu-icon-twitter-fill title=Twitter url=https://twitter.com desc=社交媒体平台
+- icon=anzhiyu-icon-bilibili-fill title=Bilibili url=https://bilibili.com desc=视频分享网站
+- icon=anzhiyu-icon-wechat-fill title=微信 url=# desc=即时通讯工具
+
+:::
+```
+
+### 按钮颜色
+
+```markdown
+:::btns cols=3
+
+- icon=anzhiyu-icon-shapes title=蓝色成员 url=# desc=前端开发 color=blue
+- icon=anzhiyu-icon-shapes title=粉色成员 url=# desc=设计师 color=pink
+- icon=anzhiyu-icon-shapes title=绿色成员 url=# desc=后端开发 color=green
+
+:::
+```
+
+### 样式风格
+
+支持的样式：`default`、`card`、`simple`
+
+```markdown
+:::btns style=card
+
+- icon=anzhiyu-icon-shapes title=卡片样式 url=# desc=使用卡片风格展示
+- icon=anzhiyu-icon-shapes title=卡片样式 url=# desc=使用卡片风格展示
+
+:::
+```
+
+### 参数说明
+
+**容器参数**（在 `:::btns` 后指定）：
+
+- `cols`: 列数，默认为 3，范围 1-6
+- `style`: 样式风格，可选 `default`、`card`、`simple`
+
+**按钮参数**：
+
+- `icon`: 图标类名或图片链接（必需）
+  - 图标类名：如 `anzhiyu-icon-user-3-fill`
+  - 图片链接：支持 http:// 或 https:// 开头的图片 URL
+- `title`: 按钮标题（必需）
+- `url`: 链接地址，默认为 `#`
+- `desc`: 描述文字（可选）
+- `color`: 按钮颜色（可选），支持 `blue`、`pink`、`red`、`purple`、`orange`、`green`
+
+### 实用示例：团队成员展示
+
+```markdown
+:::btns cols=3
+
+- icon=anzhiyu-icon-shapes title=安知鱼 url=https://blog.anheyu.com desc=创始人·全栈开发 color=blue
+- icon=anzhiyu-icon-shapes title=张小明 url=# desc=前端工程师 color=green
+- icon=anzhiyu-icon-shapes title=李小红 url=# desc=UI/UX 设计师 color=pink
+- icon=anzhiyu-icon-shapes title=王小刚 url=# desc=后端工程师 color=purple
+- icon=anzhiyu-icon-shapes title=刘小丽 url=# desc=产品经理 color=orange
+- icon=anzhiyu-icon-shapes title=赵小强 url=# desc=测试工程师 color=red
+
+:::
+```
+
+### 实用示例：友情链接
+
+```markdown
+:::btns cols=4
+
+- icon=anzhiyu-icon-link title=安知鱼博客 url=https://blog.anheyu.com desc=技术分享与生活记录
+- icon=anzhiyu-icon-link title=Hexo url=https://hexo.io desc=快速、简洁的博客框架
+- icon=anzhiyu-icon-link title=Vue.js url=https://vuejs.org desc=渐进式 JavaScript 框架
+- icon=anzhiyu-icon-link title=TypeScript url=https://www.typescriptlang.org desc=JavaScript 的超集
+
+:::
+```
+
+### 使用图片作为图标
+
+icon 字段支持直接使用图片链接（http:// 或 https:// 开头）：
+
+```markdown
+:::btns cols=3
+
+- icon=https://example.com/avatar1.jpg title=张三 url=https://example.com/user1
+- icon=https://example.com/avatar2.jpg title=李四 url=https://example.com/user2
+- icon=https://example.com/avatar3.jpg title=王五 url=https://example.com/user3
+
+:::
+```
+
+图片会自动显示为圆形头像，带有白色边框。
+
 ## 🎨 行内样式
 
 ![行内样式](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d9532ec1975ea67f58437c39028fe330_2717735974309845681.png?x-oss-process=image/format,avif)
