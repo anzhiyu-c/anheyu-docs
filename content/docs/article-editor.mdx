@@ -321,6 +321,217 @@ icon 字段支持直接使用图片链接（http:// 或 https:// 开头）：
 
 图片会自动显示为圆形头像，带有白色边框。
 
+## 🖼️ 图片组（Gallery）
+
+图片组插件可以创建美观的网格布局图片展示，支持自定义列数、间距和图片宽高比等参数。
+
+![图片组](https://via.placeholder.com/800x400/42b983/ffffff?text=Gallery+Plugin+Demo)
+
+### 基础用法
+
+```markdown
+:::gallery
+![图片1](https://upload-bbs.miyoushe.com/upload/2025/10/20/125766904/d9bd6eaa4bd95b4a3822697d2a02b9fe_3838888873972014349.jpg "美丽的风景")
+![图片2](https://example.com/image2.jpg "壮观的山峰")
+![图片3](https://example.com/image3.jpg "宁静的湖泊")
+:::
+```
+
+### 自定义列数
+
+默认为 3 列，可以设置 1-6 列：
+
+```markdown
+:::gallery cols=4
+![图片1](url1 "标题1")
+![图片2](url2 "标题2")
+![图片3](url3 "标题3")
+![图片4](url4 "标题4")
+:::
+```
+
+### 设置图片间距
+
+```markdown
+:::gallery gap=20px
+![图片1](url1)
+![图片2](url2)
+![图片3](url3)
+:::
+```
+
+### 固定宽高比
+
+让所有图片保持统一的宽高比：
+
+```markdown
+:::gallery ratio=16:9
+![宽屏图1](url1)
+![宽屏图2](url2)
+:::
+```
+
+常用宽高比：
+
+- `1:1` - 正方形
+- `16:9` - 宽屏
+- `4:3` - 传统屏幕
+- `3:2` - 照片常用比例
+
+### 组合参数
+
+```markdown
+:::gallery cols=3 gap=15px ratio=1:1
+![风景1](https://upload-bbs.miyoushe.com/upload/2025/10/20/125766904/d9bd6eaa4bd95b4a3822697d2a02b9fe_3838888873972014349.jpg "美丽的风景")
+![风景2](https://example.com/image2.jpg "壮观的山峰")
+![风景3](https://example.com/image3.jpg "宁静的湖泊")
+:::
+```
+
+### 参数说明
+
+**容器参数**（在 `:::gallery` 后指定）：
+
+- `cols`: 列数，默认为 3，范围 1-6
+- `gap`: 图片间距，默认为 10px（支持 px、rem、em 单位）
+- `ratio`: 图片宽高比（如 16:9、1:1），不设置则自适应图片原始尺寸
+
+**图片格式**：
+
+支持三种格式：
+
+1. **Markdown 图片语法**（推荐）
+
+   ```markdown
+   ![替代文本](图片URL "图片标题")
+   ```
+
+2. **HTML img 标签**
+
+   ```markdown
+   <img src="图片URL" alt="替代文本" title="图片标题" />
+   ```
+
+3. **参数格式**
+   ```markdown
+   url=图片 URL alt=替代文本 title=图片标题 desc=图片描述
+   ```
+
+### 实用示例：作品展示
+
+```markdown
+:::gallery cols=3 ratio=1:1
+![作品1](https://example.com/work1.jpg "设计作品A")
+![作品2](https://example.com/work2.jpg "设计作品B")
+![作品3](https://example.com/work3.jpg "设计作品C")
+![作品4](https://example.com/work4.jpg "设计作品D")
+![作品5](https://example.com/work5.jpg "设计作品E")
+![作品6](https://example.com/work6.jpg "设计作品F")
+:::
+```
+
+### 实用示例：照片墙
+
+```markdown
+:::gallery cols=4 gap=8px
+![照片1](https://example.com/photo1.jpg)
+![照片2](https://example.com/photo2.jpg)
+![照片3](https://example.com/photo3.jpg)
+![照片4](https://example.com/photo4.jpg)
+![照片5](https://example.com/photo5.jpg)
+![照片6](https://example.com/photo6.jpg)
+![照片7](https://example.com/photo7.jpg)
+![照片8](https://example.com/photo8.jpg)
+:::
+```
+
+### 实用示例：视频封面展示
+
+```markdown
+:::gallery cols=2 ratio=16:9 gap=20px
+![视频1](https://example.com/video1-cover.jpg "教程视频第一集")
+![视频2](https://example.com/video2-cover.jpg "教程视频第二集")
+![视频3](https://example.com/video3-cover.jpg "教程视频第三集")
+![视频4](https://example.com/video4-cover.jpg "教程视频第四集")
+:::
+```
+
+### 实用示例：单列大图
+
+```markdown
+:::gallery cols=1
+![横幅1](https://example.com/banner1.jpg "活动海报")
+![横幅2](https://example.com/banner2.jpg "宣传图片")
+:::
+```
+
+### 特性说明
+
+**1. 响应式设计**
+
+图片组会根据屏幕尺寸自动调整：
+
+- **桌面端（>768px）**：保持设定的列数
+- **平板端（≤768px）**：4-6 列自动调整为 3 列
+- **手机端（≤500px）**：3-6 列自动调整为 2 列，2 列自动调整为 1 列
+
+**2. 悬停效果**
+
+- 图片轻微上浮
+- 图片放大 1.05 倍
+- 显示图片标题和描述（如果有）
+- 添加阴影效果
+
+**3. 图片懒加载**
+
+所有图片自动启用懒加载（`loading="lazy"`），提高页面加载性能。
+
+**4. 点击放大**
+
+图片组与 Fancybox 集成，点击图片可以查看大图，支持：
+
+- 全屏查看
+- 左右切换
+- 缩放功能
+
+### 最佳实践
+
+**1. 列数选择**
+
+- **1 列**: 适合横幅图、大图展示
+- **2 列**: 适合宽屏图片、视频封面
+- **3 列**: 最常用的布局，适合作品集、相册
+- **4 列**: 适合产品展示、照片墙
+- **5-6 列**: 适合小图标、图标集合
+
+**2. 宽高比使用**
+
+- **不设置**: 图片保持原始比例，适合尺寸不一的图片
+- **1:1**: 正方形，适合头像、LOGO、产品图
+- **16:9**: 宽屏，适合视频封面、横幅
+- **4:3**: 传统照片比例
+- **3:2**: 相机照片常用比例
+
+**3. 间距设置**
+
+- **8-10px**: 紧凑布局，适合照片墙
+- **15-20px**: 标准布局，最常用
+- **25-30px**: 宽松布局，突出单张图片
+
+**4. 性能优化**
+
+- 单个图片组建议不超过 20 张
+- 使用适当的图片尺寸（不要过大）
+- 利用懒加载特性优化首屏加载
+- 移动端建议使用较少的列数（2-3 列）
+
+**5. 注意事项**
+
+- 确保图片 URL 有效且可访问
+- 使用相同尺寸的图片效果更佳
+- 测试移动端显示效果
+- 图片标题会在悬停时显示，建议添加有意义的标题
+
 ## 🎨 行内样式
 
 ![行内样式](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d9532ec1975ea67f58437c39028fe330_2717735974309845681.png?x-oss-process=image/format,avif)
