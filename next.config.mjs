@@ -22,6 +22,10 @@ const config = {
         protocol: "https",
         hostname: "img.shields.io",
       },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
     ],
   },
 };
