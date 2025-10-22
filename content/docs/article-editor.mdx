@@ -536,6 +536,224 @@ icon 字段支持直接使用图片链接（http:// 或 https:// 开头）：
 - 测试移动端显示效果
 - 图片标题会在悬停时显示，建议添加有意义的标题
 
+## 🎬 视频画廊（Video Gallery）
+
+视频画廊插件可以创建美观的网格布局视频展示，支持自定义列数、间距和视频宽高比等参数，非常适合展示教程视频、作品集、产品演示等。
+
+> **视频画廊效果预览**：创建美观的网格布局视频展示，悬停时显示播放图标，支持原生视频控制器。
+
+### 基础用法
+
+```markdown
+:::video-gallery
+url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/1.mp4 title=武汉风光 1
+url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/2.mp4 title=武汉风光 2
+:::
+```
+
+### 自定义列数
+
+默认为 2 列，可以设置 1-4 列：
+
+```markdown
+:::video-gallery cols=3
+url=视频地址 1 title=视频标题 1
+url=视频地址 2 title=视频标题 2
+url=视频地址 3 title=视频标题 3
+:::
+```
+
+### 设置视频间距
+
+```markdown
+:::video-gallery gap=20px
+url=视频地址 1 title=视频 1
+url=视频地址 2 title=视频 2
+:::
+```
+
+### 固定宽高比
+
+让所有视频保持统一的宽高比：
+
+```markdown
+:::video-gallery ratio=16:9
+url=视频地址 1 title=宽屏视频 1
+url=视频地址 2 title=宽屏视频 2
+:::
+```
+
+常用宽高比：
+
+- `16:9` - 宽屏（默认）
+- `4:3` - 传统屏幕
+- `1:1` - 正方形
+
+### 添加封面图和描述
+
+```markdown
+:::video-gallery
+url=视频地址 1 title=教程视频 poster=封面图地址 desc=详细的教程说明
+url=视频地址 2 title=演示视频 poster=封面图地址 desc=功能演示
+:::
+```
+
+### 组合参数
+
+```markdown
+:::video-gallery cols=2 gap=20px ratio=16:9
+url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/1.mp4 title=武汉风光 1 desc=美丽的武汉城市风光
+url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/2.mp4 title=武汉风光 2 desc=夜晚的武汉
+:::
+```
+
+### 参数说明
+
+**容器参数**（在 `:::video-gallery` 后指定）：
+
+- `cols`: 列数，默认为 2，范围 1-4
+- `gap`: 视频间距，默认为 16px（支持 px、rem、em 单位）
+- `ratio`: 视频宽高比（如 16:9、4:3），默认为 16:9
+
+**视频参数**：
+
+支持两种格式：
+
+1. **参数格式**（推荐）
+
+   ```markdown
+   url=视频 URL title=视频标题 poster=封面图 URL desc=视频描述 type=视频类型
+   ```
+
+2. **HTML video 标签**
+   ```markdown
+   <video src="视频URL" poster="封面图URL" title="视频标题"></video>
+   ```
+
+**参数详细说明**：
+
+- `url`: 视频地址（必填）
+- `poster`: 视频封面图（可选）
+- `title`: 视频标题（可选）
+- `desc`: 视频描述（可选）
+- `type`: 视频类型，如 mp4、webm、ogg（可选，会自动根据 URL 推断）
+
+### 实用示例：教程视频展示
+
+```markdown
+:::video-gallery cols=2 ratio=16:9
+url=https://example.com/tutorial1.mp4 title=教程第一集 poster=https://example.com/poster1.jpg desc=基础入门教程
+url=https://example.com/tutorial2.mp4 title=教程第二集 poster=https://example.com/poster2.jpg desc=进阶技巧讲解
+url=https://example.com/tutorial3.mp4 title=教程第三集 poster=https://example.com/poster3.jpg desc=实战案例演示
+url=https://example.com/tutorial4.mp4 title=教程第四集 poster=https://example.com/poster4.jpg desc=项目实战
+:::
+```
+
+### 实用示例：产品演示
+
+```markdown
+:::video-gallery cols=3 gap=15px
+url=https://example.com/demo1.mp4 title=功能 A 演示 poster=https://example.com/demo1.jpg
+url=https://example.com/demo2.mp4 title=功能 B 演示 poster=https://example.com/demo2.jpg
+url=https://example.com/demo3.mp4 title=功能 C 演示 poster=https://example.com/demo3.jpg
+:::
+```
+
+### 实用示例：单列重要视频
+
+```markdown
+:::video-gallery cols=1
+url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/1.mp4 title=重要发布会视频 desc=2024 年产品发布会完整视频
+:::
+```
+
+### 特性说明
+
+**1. 响应式设计**
+
+视频画廊会根据屏幕尺寸自动调整：
+
+- **桌面端（>1024px）**：保持设定的列数
+- **平板端（768px-1024px）**：3-4 列自动调整为 2 列
+- **手机端（≤768px）**：所有多列布局自动变为单列
+
+**2. 悬停效果**
+
+- 视频卡片轻微上浮（translateY(-2px)）
+- 显示播放按钮图标
+- 显示视频标题和描述（如果有）
+- 添加阴影效果
+
+**3. 视频播放功能**
+
+- 原生 HTML5 视频控制器
+- 支持播放、暂停、音量调节
+- 支持全屏播放
+- 支持播放速度调节
+- 预加载视频元数据（`preload="metadata"`）
+
+**4. 性能优化**
+
+- 视频不会自动播放，节省带宽
+- 只预加载元数据，不预加载完整视频
+- 建议为视频添加封面图（poster），提升加载体验
+
+### 最佳实践
+
+**1. 列数选择**
+
+- **1 列**: 适合重要视频、完整教程
+- **2 列**: 最常用的布局，适合教程系列、演示视频
+- **3 列**: 适合短视频集合、功能演示
+- **4 列**: 适合短视频预览、视频缩略图
+
+**2. 宽高比使用**
+
+- **16:9**: 最常用的宽屏比例，适合大多数视频
+- **4:3**: 传统视频比例
+- **1:1**: 正方形，适合社交媒体视频
+
+**3. 间距设置**
+
+- **12-16px**: 标准布局，最常用
+- **20-24px**: 宽松布局，突出单个视频
+- **8-10px**: 紧凑布局，适合视频墙
+
+**4. 封面图建议**
+
+- 为每个视频添加有意义的封面图
+- 封面图应清晰展示视频内容
+- 使用与视频相同的宽高比
+- 封面图尺寸建议：1280x720（16:9）或更高
+
+**5. 视频格式**
+
+- 推荐使用 MP4 格式（H.264 编码），兼容性最好
+- WebM 格式作为备选方案
+- 避免使用过大的视频文件
+
+**6. 性能优化**
+
+- 单个视频画廊建议不超过 10 个视频
+- 使用 CDN 托管视频文件
+- 压缩视频以减小文件大小
+- 移动端建议使用 1-2 列布局
+
+**7. 注意事项**
+
+- 确保视频 URL 有效且可访问
+- 建议添加视频标题和描述
+- 测试移动端播放效果
+- 视频会消耗较多流量，注意提示用户
+
+### 支持的视频格式
+
+- **MP4** (推荐) - `.mp4`, `.m4v`
+- **WebM** - `.webm`
+- **Ogg** - `.ogg`, `.ogv`
+
+插件会自动根据视频 URL 的扩展名推断视频类型，也可以手动指定 `type` 参数。
+
 ## 🎨 行内样式
 
 ![行内样式](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d9532ec1975ea67f58437c39028fe330_2717735974309845681.png?x-oss-process=image/format,avif)
