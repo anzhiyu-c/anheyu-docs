@@ -3,11 +3,11 @@
   "pages": [
     "index",
     "getting-started",
+    "article-editor.mdx",
     "configuration",
     "payment-configuration",
     "theming",
     "theme-development",
-    "article-editor.mdx",
     "pro.mdx",
     "frequent-questions"
   ]
