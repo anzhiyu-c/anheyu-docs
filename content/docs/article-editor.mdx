@@ -856,10 +856,145 @@ _It is a dream deeply rooted in the American dream._
 
 ## 🐼 图片
 
-![描述文字](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/8562b9bd5230b81be17aaff481cb95c0_8941098064819110923.jpg "title")
+编辑器支持增强的图片语法，可以添加描述、设置尺寸、调整对齐方式等。
+
+### 基础用法
+
+![描述文字](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/8562b9bd5230b81be17aaff481cb95c0_8941098064819110923.jpg)
 
 ```markdown
-![描述文字](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/8562b9bd5230b81be17aaff481cb95c0_8941098064819110923.jpg "title")
+![描述文字](https://example.com/image.jpg)
+```
+
+### 图片标题（鼠标悬停提示）
+
+图片的第三个参数是标题（title），鼠标悬停时会显示。
+
+```markdown
+![描述文字](https://example.com/image.jpg "这是图片标题")
+```
+
+### 图片描述（Caption）
+
+使用 `{caption="描述文字"}` 为图片添加底部描述文字，会渲染为 `<figcaption>` 标签。
+
+```markdown
+![](https://example.com/image.jpg){caption="这是图片描述"}
+```
+
+**渲染结果：**
+
+```html
+<figure class="image-figure image-align-center">
+  <img src="https://example.com/image.jpg" alt="" />
+  <figcaption>这是图片描述</figcaption>
+</figure>
+```
+
+### 图片尺寸
+
+使用 `{width=宽度 height=高度}` 设置图片尺寸（单位：像素）。
+
+```markdown
+![](https://example.com/image.jpg){width=800 height=600}
+```
+
+### 图片对齐方式
+
+使用 `{align=对齐方式}` 设置图片对齐，支持 `left`、`center`、`right`。
+
+```markdown
+![](https://example.com/image.jpg){align=left}
+![](https://example.com/image.jpg){align=center}
+![](https://example.com/image.jpg){align=right}
+```
+
+**注意：** 默认对齐方式为 `center`（居中）。
+
+### 组合使用
+
+可以同时使用多个参数：
+
+```markdown
+![](https://example.com/image.jpg "图片标题"){caption="图片描述" width=800 align=center}
+```
+
+### 完整示例
+
+```markdown
+![风景照片](https://example.com/landscape.jpg "美丽的风景"){caption="拍摄于 2024 年春天" width=1200 height=800 align=center}
+```
+
+**渲染为：**
+
+```html
+<figure class="image-figure image-align-center">
+  <img
+    class="article-image lazy-image image-align-center"
+    src="https://example.com/landscape.jpg"
+    data-src="https://example.com/landscape.jpg"
+    alt="风景照片"
+    title="美丽的风景"
+    width="1200"
+    height="800"
+  />
+  <figcaption>拍摄于 2024 年春天</figcaption>
+</figure>
+```
+
+### 参数说明
+
+**Markdown 标准语法：**
+
+```markdown
+![alt文字](图片URL "title标题")
+```
+
+**增强属性（在图片后添加）：**
+
+```markdown
+{caption="描述文字" width=宽度 height=高度 align=对齐方式}
+```
+
+| 参数      | 说明           | 类型   | 可选值            | 默认值 |
+| --------- | -------------- | ------ | ----------------- | ------ |
+| `caption` | 图片底部描述   | string | -                 | -      |
+| `width`   | 图片宽度（px） | number | -                 | -      |
+| `height`  | 图片高度（px） | number | -                 | -      |
+| `align`   | 对齐方式       | string | left/center/right | center |
+
+### 注意事项
+
+1. **caption 与 title 的区别**：
+   - `title`：鼠标悬停时显示的提示文字
+   - `caption`：图片下方的描述文字（figcaption）
+2. **避免重复描述**：
+   当同时设置 `title` 和 `caption` 时，系统会自动处理，避免描述文字重复显示。
+
+3. **懒加载**：
+   所有图片会自动启用懒加载，优化页面加载性能。
+
+4. **响应式**：
+   设置的宽度和高度在移动端会自动适配。
+
+### 实用示例
+
+**示例 1：带描述的居中图片**
+
+```markdown
+![](https://example.com/photo.jpg){caption="这是一张美丽的照片" align=center}
+```
+
+**示例 2：指定尺寸的左对齐图片**
+
+```markdown
+![](https://example.com/avatar.jpg){width=200 height=200 align=left}
+```
+
+**示例 3：完整参数的图片**
+
+```markdown
+![产品图](https://example.com/product.jpg "查看大图"){caption="2024 新款产品" width=600 height=400 align=center}
 ```
 
 ## 🙉 下划线
