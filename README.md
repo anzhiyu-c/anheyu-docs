@@ -20,6 +20,8 @@
   <a title="GitHub Forks" target="_blank" href="https://github.com/anzhiyu-c/anheyu-app/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/anzhiyu-c/anheyu-app.svg?label=Forks&style=social"></a>  
 </p>
 
+![](https://upload-bbs.miyoushe.com/upload/2025/10/28/125766904/04eea66306f81b76b4e3623ee098bf40_3240315038986097575.png?x-oss-process=image/format,avif)
+
 如果能给我一个**star**那将是对我莫大的鼓励。使用这个应用之前，你应该明白它是一个完全独立的应用，它需要`服务器`才能进行搭建，推荐使用 docker 部署，能够极大的削弱环境配置带来的问题。
 
 由 [安知鱼](https://github.com/anzhiyu-c) 负责开发与维护。
@@ -106,7 +108,6 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ![AI摘要](https://upload-bbs.miyoushe.com/upload/2025/09/14/125766904/3e4d676c64930e1c573393420dc2cba5_2848259665925430.png?x-oss-process=image/format,avif)
 
-
 **订单管理(PRO)**
 
 ![付费文章内容](https://upload-bbs.miyoushe.com/upload/2025/09/17/125766904/4410b49e38af24bef72e6ae555495e09_6600710485516302903.png?x-oss-process=image/format,avif)
@@ -114,7 +115,6 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 **密码文章内容(PRO)**
 
 ![密码文章内容](https://upload-bbs.miyoushe.com/upload/2025/09/17/125766904/8baeeafcb2cf9caf72c84b89f2c69d67_5541575116482903287.png?x-oss-process=image/format,avif)
-
 
 **让人眼前一亮的清爽界面**
 
