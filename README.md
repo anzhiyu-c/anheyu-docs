@@ -28,9 +28,9 @@
 
 GitHub: https://github.com/anzhiyu-c/anheyu-app
 
-预览: 👍 [AnZhiYu](https://anheyu.com/) || 🤞 [AnZhiYu](https://index.anheyu.com/)
+预览: 👍 [AnZhiYu](https://blog.anheyu.com/) || 🤞 [AnZhiYu](https://index.anheyu.com/)
 
-文档: 📖 [AnHeYu Docs](https://anheyu.com/posts/Z3MC)
+文档: 📖 [AnHeYu Docs](https://dev.anheyu.com)
 
 ## 🚀 快速开始
 
