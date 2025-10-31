@@ -229,7 +229,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             # Best practice: Pin to major version.
             # NOTE: For major version jumps:
             # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
-            image: postgres:17
+            image: postgres:18
             container_name: anheyu_postgresql
             ports:
               - "5432:5432"
@@ -238,7 +238,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - POSTGRES_DB=anheyu
               - POSTGRES_HOST_AUTH_METHOD=trust
             volumes:
-              - database_postgres:/var/lib/postgresql/data
+              - database_postgres:/var/lib/postgresql
 
           # Redis 服务（可选）
           # 如果不需要 Redis，可以注释掉整个 anheyu_redis 服务
@@ -292,7 +292,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             # Best practice: Pin to major version.
             # NOTE: For major version jumps:
             # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
-            image: postgres:17
+            image: postgres:18
             container_name: anheyu_postgresql
             ports:
               - "5432:5432"
@@ -301,7 +301,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - POSTGRES_DB=anheyu
               - POSTGRES_HOST_AUTH_METHOD=trust
             volumes:
-              - database_postgres:/var/lib/postgresql/data
+              - database_postgres:/var/lib/postgresql
             healthcheck:
               test: ["CMD-SHELL", "pg_isready -U anheyu -d anheyu"]
               interval: 5s
