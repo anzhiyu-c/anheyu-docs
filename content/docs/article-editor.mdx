@@ -754,6 +754,48 @@ url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/1.mp4 title=重�
 
 插件会自动根据视频 URL 的扩展名推断视频类型，也可以手动指定 `type` 参数。
 
+## 🎵 音乐播放器（Music Player）
+
+![文章内音乐组件](https://upload-bbs.miyoushe.com/upload/2025/11/05/125766904/9d759897f65eb5e7d59d54e54806e671_970332254315767898.png)
+
+音乐播放器插件可以在文章中嵌入美观的网易云音乐播放器，支持播放、暂停、进度控制等功能，进度条颜色会自动匹配封面主色。
+
+> **音乐播放器效果预览**：创建精美的音乐卡片，显示封面、歌曲名、歌手，支持播放控制和进度拖动。
+
+### 基础用法
+
+```markdown
+{music id=554241732}{/music}
+```
+
+只需提供网易云音乐的歌曲 ID，系统会自动获取歌曲信息、封面、音频 URL，并提取封面主色用于进度条。
+
+### 获取歌曲 ID
+
+1. 打开网易云音乐网页版或客户端
+2. 找到你喜欢的歌曲
+3. 复制歌曲链接，ID 就是链接中的数字
+
+例如：`https://music.163.com/#/song?id=554241732`，ID 就是 `554241732`
+
+### 使用示例
+
+**单首歌曲**
+
+```markdown
+{music id=554241732}{/music}
+```
+
+**多首歌曲列表**
+
+```markdown
+{music id=554241732}{/music}
+
+{music id=1974443814}{/music}
+
+{music id=1868553}{/music}
+```
+
 ## 🎨 行内样式
 
 ![行内样式](https://upload-bbs.miyoushe.com/upload/2025/10/03/125766904/d9532ec1975ea67f58437c39028fe330_2717735974309845681.png?x-oss-process=image/format,avif)
