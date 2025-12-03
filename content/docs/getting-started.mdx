@@ -214,7 +214,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_DATABASE_USER=anheyu
               - ANHEYU_DATABASE_NAME=anheyu
               - ANHEYU_DATABASE_PORT=5432
-              - ANHEYU_DATABASE_PASSWORD=
+              - ANHEYU_DATABASE_PASSWORD=anheyu_password
               # Redis 配置（可选）
               # 如果想使用 Redis，保持下面这行；如果不想使用，注释掉即可
               # 不配置时应用会自动降级到内存缓存
@@ -231,12 +231,10 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
             image: postgres:18
             container_name: anheyu_postgresql
-            ports:
-              - "5432:5432"
             environment:
               - POSTGRES_USER=anheyu
               - POSTGRES_DB=anheyu
-              - POSTGRES_HOST_AUTH_METHOD=trust
+              - POSTGRES_PASSWORD=anheyu_password
             volumes:
               - database_postgres:/var/lib/postgresql
 
@@ -276,7 +274,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
               - ANHEYU_DATABASE_USER=anheyu
               - ANHEYU_DATABASE_NAME=anheyu
               - ANHEYU_DATABASE_PORT=5432
-              - ANHEYU_DATABASE_PASSWORD=
+              - ANHEYU_DATABASE_PASSWORD=anheyu_password
               # Redis 配置（可选）
               # 如果想使用 Redis，保持下面这行；如果不想使用，注释掉即可
               # 不配置时应用会自动降级到内存缓存
@@ -294,12 +292,10 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
             # backup & consult https://www.postgresql.org/docs/current/pgupgrade.html
             image: postgres:18
             container_name: anheyu_postgresql
-            ports:
-              - "5432:5432"
             environment:
               - POSTGRES_USER=anheyu
               - POSTGRES_DB=anheyu
-              - POSTGRES_HOST_AUTH_METHOD=trust
+              - POSTGRES_PASSWORD=anheyu_password
             volumes:
               - database_postgres:/var/lib/postgresql
             healthcheck:
@@ -1133,9 +1129,8 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
 ## 如何更新
 
 <Callout type="info" title="更新前准备">
-  - 🔐 建议先备份 `data`、`themes`、数据库等持久化目录
-  - ✅ 确认目标版本的发布说明，关注兼容性和配置变更
-  - 🧪 更新完成后请登录后台自测关键功能
+  - 🔐 建议先备份 `data`、`themes`、数据库等持久化目录 - ✅ 确认目标版本的发布说明，关注兼容性和配置变更 - 🧪
+  更新完成后请登录后台自测关键功能
 </Callout>
 
 <Tabs items={['Docker Compose', 'Docker', '源码部署', '二进制文件']}>
@@ -1157,6 +1152,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
       - 如有自定义镜像标签，请将 `latest` 替换为对应的版本号
       - 推荐在升级后执行 `docker compose ps` 与 `docker compose logs -f` 检查服务状态
     </Callout>
+
   </Tab>
 
   <Tab value="Docker">
@@ -1224,6 +1220,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
         </Callout>
       </Tab>
     </Tabs>
+
   </Tab>
 
   <Tab value="源码部署">
@@ -1254,6 +1251,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
       - 如果有自定义分支，请将 `origin main` 替换为对应分支
       - 建议在重启前备份原二进制 `cp anheyu-app anheyu-app.bak`
     </Callout>
+
   </Tab>
 
   <Tab value="二进制文件">
@@ -1279,6 +1277,7 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
       - Windows: `anheyu-app-windows-amd64.exe`
       - Pro 版请通过授权下载专用发行包，并设置 `ANHEYU_LICENSE_KEY`
     </Callout>
+
   </Tab>
 </Tabs>
 
