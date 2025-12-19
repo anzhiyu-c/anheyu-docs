@@ -1301,6 +1301,37 @@ Anheyu 提供了多种安装方式，请根据您的需求选择合适的部署�
   </Accordion>
 </Accordions>
 
+## 宝塔面板 WAF 配置
+
+<Callout type="warn" title="使用宝塔面板的用户请注意">
+  如果你使用宝塔面板部署 Anheyu，并且开启了 WAF（Web 应用防火墙），可能会导致部分 API 请求被拦截。你需要在 WAF 中将以下
+  URL 规则加入白名单。
+</Callout>
+
+在宝塔面板中，进入 **网站** → **设置** → **WAF** → **URL 白名单**，添加以下规则：
+
+```text
+^/api/pro/ai-podcast/cache-stat
+^/api/pro/ai-podcast/pre-cache
+^/api/pro/articles
+^/api/pro/article/ai-summary
+^/api/pages/[1-9999]
+^/api/pro/articles/
+^/api/settings/update
+```
+
+<Callout type="info" title="说明">
+  这些 API 端点用于以下功能：
+  - **ai-podcast**: AI 播客相关功能
+  - **articles**: 文章管理和查询
+  - **ai-summary**: AI 文章摘要生成
+  - **pages**: 分页查询
+  - **settings/update**: 系统设置更新
+
+如果不添加白名单，这些功能可能会因为 WAF 拦截而无法正常使用。
+
+</Callout>
+
 ## 版本号释义
 
 本项目的版本号为 X.Y.Z 格式，但与常见的[语义化版本号规范](https://semver.org/lang/zh-CN/)有部分区别，具体释义如下：
