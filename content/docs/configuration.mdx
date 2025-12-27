@@ -88,3 +88,29 @@ description: 了解 Anheyu 的详细配置选项
 <Callout type="info" title="提示">
   缩略图自动缓存，采用 LRU 算法管理。OneDrive 存储建议开启"缩略图代理生成"以获得完整支持。
 </Callout>
+
+## 静态资源自定义
+
+使用 `--export-assets` 参数可以将内置的前端静态资源导出到指定目录，方便自定义修改：
+
+```bash
+# 社区版
+./anheyu-app --export-assets ./my-static
+
+# Pro 版（无需授权码）
+./anheyu-pro --export-assets ./my-static
+```
+
+### 使用自定义资源
+
+将导出的资源修改后，挂载到 `/anheyu/static` 目录即可：
+
+```yaml
+# docker-compose.yml
+volumes:
+  - ./my-static:/anheyu/static
+```
+
+<Callout type="warn" title="注意">
+  自定义静态资源后，应用升级时不会自动更新这些资源，请在升级前备份。
+</Callout>

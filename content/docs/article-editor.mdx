@@ -264,65 +264,15 @@ icon=anzhiyu-icon-shapes title=王五 url=https://example.com desc=UI 设计师
 
 ### 参数说明
 
-**容器参数**（在 `:::btns` 后指定）：
-
-- `cols`: 列数，默认为 3，范围 1-6
-- `style`: 样式风格，可选 `default`、`card`、`simple`
+**容器参数**：`cols`（列数 1-6，默认 3）、`style`（`default`/`card`/`simple`）
 
 **按钮参数**：
 
-- `icon`: 图标（必需），支持三种格式：
-  - AnZhiYu 图标：如 `anzhiyu-icon-user-3-fill`
-  - Iconify 图标：如 `ri:github-fill`、`mdi:home`（格式为 `prefix:name`）
-  - 图片链接：支持 http:// 或 https:// 开头的图片 URL
-- `title`: 按钮标题（必需）
-- `url`: 链接地址，默认为 `#`
-- `desc`: 描述文字（可选）
-- `color`: 按钮颜色（可选），支持 `blue`、`pink`、`red`、`purple`、`orange`、`green`
-
-### 实用示例：团队成员展示
-
-```markdown
-:::btns cols=3
-
-- icon=anzhiyu-icon-shapes title=安知鱼 url=https://blog.anheyu.com desc=创始人·全栈开发 color=blue
-- icon=anzhiyu-icon-shapes title=张小明 url=# desc=前端工程师 color=green
-- icon=anzhiyu-icon-shapes title=李小红 url=# desc=UI/UX 设计师 color=pink
-- icon=anzhiyu-icon-shapes title=王小刚 url=# desc=后端工程师 color=purple
-- icon=anzhiyu-icon-shapes title=刘小丽 url=# desc=产品经理 color=orange
-- icon=anzhiyu-icon-shapes title=赵小强 url=# desc=测试工程师 color=red
-
-:::
-```
-
-### 实用示例：友情链接
-
-```markdown
-:::btns cols=4
-
-- icon=anzhiyu-icon-link title=安知鱼博客 url=https://blog.anheyu.com desc=技术分享与生活记录
-- icon=anzhiyu-icon-link title=Hexo url=https://hexo.io desc=快速、简洁的博客框架
-- icon=anzhiyu-icon-link title=Vue.js url=https://vuejs.org desc=渐进式 JavaScript 框架
-- icon=anzhiyu-icon-link title=TypeScript url=https://www.typescriptlang.org desc=JavaScript 的超集
-
-:::
-```
-
-### 使用图片作为图标
-
-icon 字段支持直接使用图片链接（http:// 或 https:// 开头）：
-
-```markdown
-:::btns cols=3
-
-- icon=https://example.com/avatar1.jpg title=张三 url=https://example.com/user1
-- icon=https://example.com/avatar2.jpg title=李四 url=https://example.com/user2
-- icon=https://example.com/avatar3.jpg title=王五 url=https://example.com/user3
-
-:::
-```
-
-图片会自动显示为圆形头像，带有白色边框。
+- `icon`：图标（必需），支持 AnZhiYu 图标、Iconify 图标、图片 URL
+- `title`：标题（必需）
+- `url`：链接地址
+- `desc`：描述文字
+- `color`：颜色（`blue`/`pink`/`red`/`purple`/`orange`/`green`）
 
 ## 🖼️ 图片组（Gallery）
 
@@ -395,147 +345,9 @@ icon 字段支持直接使用图片链接（http:// 或 https:// 开头）：
 
 ### 参数说明
 
-**容器参数**（在 `:::gallery` 后指定）：
+**容器参数**：`cols`（列数 1-6，默认 3）、`gap`（间距，默认 10px）、`ratio`（宽高比，如 16:9）
 
-- `cols`: 列数，默认为 3，范围 1-6
-- `gap`: 图片间距，默认为 10px（支持 px、rem、em 单位）
-- `ratio`: 图片宽高比（如 16:9、1:1），不设置则自适应图片原始尺寸
-
-**图片格式**：
-
-支持三种格式：
-
-1. **Markdown 图片语法**（推荐）
-
-   ```markdown
-   ![替代文本](图片URL "图片标题")
-   ```
-
-2. **HTML img 标签**
-
-   ```markdown
-   <img src="图片URL" alt="替代文本" title="图片标题" />
-   ```
-
-3. **参数格式**
-   ```markdown
-   url=图片 URL alt=替代文本 title=图片标题 desc=图片描述
-   ```
-
-### 实用示例：作品展示
-
-```markdown
-:::gallery cols=3 ratio=1:1
-![作品1](https://example.com/work1.jpg "设计作品A")
-![作品2](https://example.com/work2.jpg "设计作品B")
-![作品3](https://example.com/work3.jpg "设计作品C")
-![作品4](https://example.com/work4.jpg "设计作品D")
-![作品5](https://example.com/work5.jpg "设计作品E")
-![作品6](https://example.com/work6.jpg "设计作品F")
-:::
-```
-
-### 实用示例：照片墙
-
-```markdown
-:::gallery cols=4 gap=8px
-![照片1](https://example.com/photo1.jpg)
-![照片2](https://example.com/photo2.jpg)
-![照片3](https://example.com/photo3.jpg)
-![照片4](https://example.com/photo4.jpg)
-![照片5](https://example.com/photo5.jpg)
-![照片6](https://example.com/photo6.jpg)
-![照片7](https://example.com/photo7.jpg)
-![照片8](https://example.com/photo8.jpg)
-:::
-```
-
-### 实用示例：视频封面展示
-
-```markdown
-:::gallery cols=2 ratio=16:9 gap=20px
-![视频1](https://example.com/video1-cover.jpg "教程视频第一集")
-![视频2](https://example.com/video2-cover.jpg "教程视频第二集")
-![视频3](https://example.com/video3-cover.jpg "教程视频第三集")
-![视频4](https://example.com/video4-cover.jpg "教程视频第四集")
-:::
-```
-
-### 实用示例：单列大图
-
-```markdown
-:::gallery cols=1
-![横幅1](https://example.com/banner1.jpg "活动海报")
-![横幅2](https://example.com/banner2.jpg "宣传图片")
-:::
-```
-
-### 特性说明
-
-**1. 响应式设计**
-
-图片组会根据屏幕尺寸自动调整：
-
-- **桌面端（>768px）**：保持设定的列数
-- **平板端（≤768px）**：4-6 列自动调整为 3 列
-- **手机端（≤500px）**：3-6 列自动调整为 2 列，2 列自动调整为 1 列
-
-**2. 悬停效果**
-
-- 图片轻微上浮
-- 图片放大 1.05 倍
-- 显示图片标题和描述（如果有）
-- 添加阴影效果
-
-**3. 图片懒加载**
-
-所有图片自动启用懒加载（`loading="lazy"`），提高页面加载性能。
-
-**4. 点击放大**
-
-图片组与 Fancybox 集成，点击图片可以查看大图，支持：
-
-- 全屏查看
-- 左右切换
-- 缩放功能
-
-### 最佳实践
-
-**1. 列数选择**
-
-- **1 列**: 适合横幅图、大图展示
-- **2 列**: 适合宽屏图片、视频封面
-- **3 列**: 最常用的布局，适合作品集、相册
-- **4 列**: 适合产品展示、照片墙
-- **5-6 列**: 适合小图标、图标集合
-
-**2. 宽高比使用**
-
-- **不设置**: 图片保持原始比例，适合尺寸不一的图片
-- **1:1**: 正方形，适合头像、LOGO、产品图
-- **16:9**: 宽屏，适合视频封面、横幅
-- **4:3**: 传统照片比例
-- **3:2**: 相机照片常用比例
-
-**3. 间距设置**
-
-- **8-10px**: 紧凑布局，适合照片墙
-- **15-20px**: 标准布局，最常用
-- **25-30px**: 宽松布局，突出单张图片
-
-**4. 性能优化**
-
-- 单个图片组建议不超过 20 张
-- 使用适当的图片尺寸（不要过大）
-- 利用懒加载特性优化首屏加载
-- 移动端建议使用较少的列数（2-3 列）
-
-**5. 注意事项**
-
-- 确保图片 URL 有效且可访问
-- 使用相同尺寸的图片效果更佳
-- 测试移动端显示效果
-- 图片标题会在悬停时显示，建议添加有意义的标题
+**图片格式**：使用标准 Markdown 图片语法 `![alt](url "title")`
 
 ## 🎬 视频画廊（Video Gallery）
 
@@ -610,150 +422,9 @@ url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/2.mp4 title=武�
 
 ### 参数说明
 
-**容器参数**（在 `:::video-gallery` 后指定）：
+**容器参数**：`cols`（列数 1-4，默认 2）、`gap`（间距，默认 16px）、`ratio`（宽高比，默认 16:9）
 
-- `cols`: 列数，默认为 2，范围 1-4
-- `gap`: 视频间距，默认为 16px（支持 px、rem、em 单位）
-- `ratio`: 视频宽高比（如 16:9、4:3），默认为 16:9
-
-**视频参数**：
-
-支持两种格式：
-
-1. **参数格式**（推荐）
-
-   ```markdown
-   url=视频 URL title=视频标题 poster=封面图 URL desc=视频描述 type=视频类型
-   ```
-
-2. **HTML video 标签**
-   ```markdown
-   <video src="视频URL" poster="封面图URL" title="视频标题"></video>
-   ```
-
-**参数详细说明**：
-
-- `url`: 视频地址（必填）
-- `poster`: 视频封面图（可选）
-- `title`: 视频标题（可选）
-- `desc`: 视频描述（可选）
-- `type`: 视频类型，如 mp4、webm、ogg（可选，会自动根据 URL 推断）
-
-### 实用示例：教程视频展示
-
-```markdown
-:::video-gallery cols=2 ratio=16:9
-url=https://example.com/tutorial1.mp4 title=教程第一集 poster=https://example.com/poster1.jpg desc=基础入门教程
-url=https://example.com/tutorial2.mp4 title=教程第二集 poster=https://example.com/poster2.jpg desc=进阶技巧讲解
-url=https://example.com/tutorial3.mp4 title=教程第三集 poster=https://example.com/poster3.jpg desc=实战案例演示
-url=https://example.com/tutorial4.mp4 title=教程第四集 poster=https://example.com/poster4.jpg desc=项目实战
-:::
-```
-
-### 实用示例：产品演示
-
-```markdown
-:::video-gallery cols=3 gap=15px
-url=https://example.com/demo1.mp4 title=功能 A 演示 poster=https://example.com/demo1.jpg
-url=https://example.com/demo2.mp4 title=功能 B 演示 poster=https://example.com/demo2.jpg
-url=https://example.com/demo3.mp4 title=功能 C 演示 poster=https://example.com/demo3.jpg
-:::
-```
-
-### 实用示例：单列重要视频
-
-```markdown
-:::video-gallery cols=1
-url=https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/wuhan/1.mp4 title=重要发布会视频 desc=2024 年产品发布会完整视频
-:::
-```
-
-### 特性说明
-
-**1. 响应式设计**
-
-视频画廊会根据屏幕尺寸自动调整：
-
-- **桌面端（>1024px）**：保持设定的列数
-- **平板端（768px-1024px）**：3-4 列自动调整为 2 列
-- **手机端（≤768px）**：所有多列布局自动变为单列
-
-**2. 悬停效果**
-
-- 视频卡片轻微上浮（translateY(-2px)）
-- 显示播放按钮图标
-- 显示视频标题和描述（如果有）
-- 添加阴影效果
-
-**3. 视频播放功能**
-
-- 原生 HTML5 视频控制器
-- 支持播放、暂停、音量调节
-- 支持全屏播放
-- 支持播放速度调节
-- 预加载视频元数据（`preload="metadata"`）
-
-**4. 性能优化**
-
-- 视频不会自动播放，节省带宽
-- 只预加载元数据，不预加载完整视频
-- 建议为视频添加封面图（poster），提升加载体验
-
-### 最佳实践
-
-**1. 列数选择**
-
-- **1 列**: 适合重要视频、完整教程
-- **2 列**: 最常用的布局，适合教程系列、演示视频
-- **3 列**: 适合短视频集合、功能演示
-- **4 列**: 适合短视频预览、视频缩略图
-
-**2. 宽高比使用**
-
-- **16:9**: 最常用的宽屏比例，适合大多数视频
-- **4:3**: 传统视频比例
-- **1:1**: 正方形，适合社交媒体视频
-
-**3. 间距设置**
-
-- **12-16px**: 标准布局，最常用
-- **20-24px**: 宽松布局，突出单个视频
-- **8-10px**: 紧凑布局，适合视频墙
-
-**4. 封面图建议**
-
-- 为每个视频添加有意义的封面图
-- 封面图应清晰展示视频内容
-- 使用与视频相同的宽高比
-- 封面图尺寸建议：1280x720（16:9）或更高
-
-**5. 视频格式**
-
-- 推荐使用 MP4 格式（H.264 编码），兼容性最好
-- WebM 格式作为备选方案
-- 避免使用过大的视频文件
-
-**6. 性能优化**
-
-- 单个视频画廊建议不超过 10 个视频
-- 使用 CDN 托管视频文件
-- 压缩视频以减小文件大小
-- 移动端建议使用 1-2 列布局
-
-**7. 注意事项**
-
-- 确保视频 URL 有效且可访问
-- 建议添加视频标题和描述
-- 测试移动端播放效果
-- 视频会消耗较多流量，注意提示用户
-
-### 支持的视频格式
-
-- **MP4** (推荐) - `.mp4`, `.m4v`
-- **WebM** - `.webm`
-- **Ogg** - `.ogg`, `.ogv`
-
-插件会自动根据视频 URL 的扩展名推断视频类型，也可以手动指定 `type` 参数。
+**视频参数**：`url`（必填）、`title`、`poster`（封面图）、`desc`
 
 ## 🎵 音乐播放器（Music Player）
 
@@ -956,89 +627,11 @@ _It is a dream deeply rooted in the American dream._
 
 ### 组合使用
 
-可以同时使用多个参数：
-
 ```markdown
-![](https://example.com/image.jpg "图片标题"){caption="图片描述" width=800 align=center}
+![风景照片](https://example.com/image.jpg "悬停提示"){caption="底部描述" width=800 align=center}
 ```
 
-### 完整示例
-
-```markdown
-![风景照片](https://example.com/landscape.jpg "美丽的风景"){caption="拍摄于 2024 年春天" width=1200 height=800 align=center}
-```
-
-**渲染为：**
-
-```html
-<figure class="image-figure image-align-center">
-  <img
-    class="article-image lazy-image image-align-center"
-    src="https://example.com/landscape.jpg"
-    data-src="https://example.com/landscape.jpg"
-    alt="风景照片"
-    title="美丽的风景"
-    width="1200"
-    height="800"
-  />
-  <figcaption>拍摄于 2024 年春天</figcaption>
-</figure>
-```
-
-### 参数说明
-
-**Markdown 标准语法：**
-
-```markdown
-![alt文字](图片URL "title标题")
-```
-
-**增强属性（在图片后添加）：**
-
-```markdown
-{caption="描述文字" width=宽度 height=高度 align=对齐方式}
-```
-
-| 参数      | 说明           | 类型   | 可选值            | 默认值 |
-| --------- | -------------- | ------ | ----------------- | ------ |
-| `caption` | 图片底部描述   | string | -                 | -      |
-| `width`   | 图片宽度（px） | number | -                 | -      |
-| `height`  | 图片高度（px） | number | -                 | -      |
-| `align`   | 对齐方式       | string | left/center/right | center |
-
-### 注意事项
-
-1. **caption 与 title 的区别**：
-   - `title`：鼠标悬停时显示的提示文字
-   - `caption`：图片下方的描述文字（figcaption）
-2. **避免重复描述**：
-   当同时设置 `title` 和 `caption` 时，系统会自动处理，避免描述文字重复显示。
-
-3. **懒加载**：
-   所有图片会自动启用懒加载，优化页面加载性能。
-
-4. **响应式**：
-   设置的宽度和高度在移动端会自动适配。
-
-### 实用示例
-
-**示例 1：带描述的居中图片**
-
-```markdown
-![](https://example.com/photo.jpg){caption="这是一张美丽的照片" align=center}
-```
-
-**示例 2：指定尺寸的左对齐图片**
-
-```markdown
-![](https://example.com/avatar.jpg){width=200 height=200 align=left}
-```
-
-**示例 3：完整参数的图片**
-
-```markdown
-![产品图](https://example.com/product.jpg "查看大图"){caption="2024 新款产品" width=600 height=400 align=center}
-```
+**增强属性**：`caption`（底部描述）、`width`/`height`（尺寸）、`align`（对齐：left/center/right）
 
 ## 🙉 下划线
 
@@ -1355,32 +948,15 @@ failure、danger、bug、example、quote、hint、caution、error、attention
 {linkcard url=https://www.google.com title=Google sitename=搜索引擎 tips=访问搜索引擎}{/linkcard}
 ```
 
-### 完整示例
-
-```markdown
-{linkcard url=https://docs.anheyu.com title=AnZhiYu 文档 sitename=AnZhiYu Docs icon=anzhiyu-icon-book tips=查看完整文档}{/linkcard}
-```
-
 ### 参数说明
 
-| 参数     | 说明                           | 类型   | 可选值                       | 默认值            |
-| -------- | ------------------------------ | ------ | ---------------------------- | ----------------- |
-| url      | 链接地址                       | string | -                            | #                 |
-| title    | 链接标题                       | string | -                            | 链接标题          |
-| sitename | 网站名称                       | string | -                            | 网站名称          |
-| icon     | 图标（字体图标类名或图片链接） | string | 字体图标类名或 HTTP 图片链接 | anzhiyu-icon-link |
-| tips     | 提示文本                       | string | -                            | 引用站外地址      |
-
-### 注意事项
-
-- 链接会在新标签页中打开
-- 自动添加 `rel="external nofollow noreferrer"` 属性
-- 图标支持两种方式：
-  - **字体图标**：使用 AnZhiYu 图标字体类名（如 `anzhiyu-icon-github`）
-  - **图片图标**：使用 HTTP/HTTPS 图片链接（如网站 favicon）
-- 图片图标会自动调整为 20x20 像素，带圆角效果
-- 卡片具有悬停效果和点击反馈
-- 适合用于推荐相关链接或引用外部资源
+| 参数     | 说明     | 默认值            |
+| -------- | -------- | ----------------- |
+| url      | 链接地址 | #                 |
+| title    | 链接标题 | 链接标题          |
+| sitename | 网站名称 | 网站名称          |
+| icon     | 图标     | anzhiyu-icon-link |
+| tips     | 提示文本 | 引用站外地址      |
 
 ## 💡 提示框（Tip）（PRO 版本专享）
 
@@ -1426,29 +1002,16 @@ Tip 插件可以创建各种样式的提示信息，支持鼠标悬停和点击�
 {tip text=延迟显示 content=延迟 500ms 显示的提示 delay=500}{/tip}
 ```
 
-### 组合使用
-
-```markdown
-{tip text=复杂提示 content=这是一个成功主题、底部显示、点击触发的提示 theme=success position=bottom trigger=click}{/tip}
-```
-
 ### 参数说明
 
-| 参数     | 说明         | 类型          | 可选值                                | 默认值         |
-| -------- | ------------ | ------------- | ------------------------------------- | -------------- |
-| text     | 显示的文本   | string        | -                                     | 提示文本       |
-| content  | 提示内容     | string        | -                                     | 这里是提示内容 |
-| theme    | 主题样式     | string        | dark/light/info/warning/error/success | dark           |
-| position | 显示位置     | string        | top/bottom/left/right                 | top            |
-| trigger  | 触发方式     | string        | hover/click                           | hover          |
-| delay    | 延迟时间(ms) | string/number | -                                     | 300            |
-
-### 注意事项
-
-- 提示文本会显示下划线虚线样式，表示可交互
-- 鼠标悬停时文本颜色会发生变化
-- 点击触发的提示需要再次点击才能关闭
-- 支持响应式设计，在移动端会自动调整样式
+| 参数     | 说明        | 可选值                                | 默认值 |
+| -------- | ----------- | ------------------------------------- | ------ |
+| text     | 显示文本    | -                                     | -      |
+| content  | 提示内容    | -                                     | -      |
+| theme    | 主题样式    | dark/light/info/warning/error/success | dark   |
+| position | 显示位置    | top/bottom/left/right                 | top    |
+| trigger  | 触发方式    | hover/click                           | hover  |
+| delay    | 延迟时间 ms | -                                     | 300    |
 
 ## 📝 编辑器特色功能
 
