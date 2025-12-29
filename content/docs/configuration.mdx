@@ -95,10 +95,10 @@ description: 了解 Anheyu 的详细配置选项
 
 ```bash
 # 社区版
-./anheyu-app --export-assets ./my-static
+./anheyu-app --export-assets ./static
 
 # Pro 版（无需授权码）
-./anheyu-pro --export-assets ./my-static
+./anheyu-pro --export-assets ./static
 ```
 
 ### 使用自定义资源
@@ -108,7 +108,7 @@ description: 了解 Anheyu 的详细配置选项
 ```yaml
 # docker-compose.yml
 volumes:
-  - ./my-static:/anheyu/static
+  - ./static:/anheyu/static
 ```
 
 <Callout type="warn" title="注意">
