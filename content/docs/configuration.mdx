@@ -3,15 +3,127 @@ title: 配置指南
 description: 了解 Anheyu 的详细配置选项
 ---
 
-## ip 信息获取
+## IP 信息获取
 
-安和鱼系统中的 ip 地址来源于 NSUUU API
+安和鱼系统中的 IP 地址来源于 NSUUU API
 
 系统**未默认配置 API Token**，你需要登录后台在
 
 `系统设置` -> `文章配置` 里面配置 `IP 属地查询 API 地址` 以及 `IP属地查询 API Token`
 
 请到 [https://api.nsuuu.com](https://api.nsuuu.com) 注册账户并获取 Key 后填写进来
+
+## 反向代理配置
+
+如果你使用 Nginx、Caddy 或其他反向代理，需要正确配置以传递客户端真实 IP，否则系统获取到的可能是代理服务器的 IP，导致 IP 定位不准确。
+
+### Nginx 配置
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+
+### Caddy 配置
+
+Caddy 默认会自动传递这些头，无需额外配置：
+
+```caddyfile
+your-domain.com {
+    reverse_proxy localhost:8080
+}
+```
+
+### Docker Compose 配置
+
+如果使用 Docker 部署并搭配 Nginx：
+
+```yaml
+# docker-compose.yml
+services:
+  anheyu:
+    image: anheyu/anheyu-app:latest
+    ports:
+      - "8080:8080"
+    # ...其他配置
+```
+
+确保 Nginx 配置了正确的代理头（参考上方 Nginx 配置）。
+
+### CDN 配置
+
+系统支持主流 CDN 服务的客户端 IP 识别：
+
+| CDN 服务       | 专用请求头         | 支持状态 |
+| -------------- | ------------------ | -------- |
+| Cloudflare     | `CF-Connecting-IP` | ✅ 支持  |
+| 腾讯云 EdgeOne | `EO-Connecting-IP` | ✅ 支持  |
+| 阿里云 CDN/ESA | `Ali-CDN-Real-IP`  | ✅ 支持  |
+| 通用代理       | `X-Forwarded-For`  | ✅ 支持  |
+
+#### Cloudflare
+
+Cloudflare 默认传递 `CF-Connecting-IP` 头，无需额外配置。
+
+如果你同时使用 Nginx，建议配置恢复真实 IP：
+
+```nginx
+# 在 http 块或 server 块中添加
+set_real_ip_from 103.21.244.0/22;
+set_real_ip_from 103.22.200.0/22;
+set_real_ip_from 103.31.4.0/22;
+set_real_ip_from 104.16.0.0/13;
+set_real_ip_from 104.24.0.0/14;
+set_real_ip_from 108.162.192.0/18;
+set_real_ip_from 131.0.72.0/22;
+set_real_ip_from 141.101.64.0/18;
+set_real_ip_from 162.158.0.0/15;
+set_real_ip_from 172.64.0.0/13;
+set_real_ip_from 173.245.48.0/20;
+set_real_ip_from 188.114.96.0/20;
+set_real_ip_from 190.93.240.0/20;
+set_real_ip_from 197.234.240.0/22;
+set_real_ip_from 198.41.128.0/17;
+# IPv6
+set_real_ip_from 2400:cb00::/32;
+set_real_ip_from 2606:4700::/32;
+set_real_ip_from 2803:f800::/32;
+set_real_ip_from 2405:b500::/32;
+set_real_ip_from 2405:8100::/32;
+set_real_ip_from 2a06:98c0::/29;
+set_real_ip_from 2c0f:f248::/32;
+
+real_ip_header CF-Connecting-IP;
+```
+
+#### 腾讯云 EdgeOne (EO)
+
+EdgeOne 会自动传递 `EO-Connecting-IP` 头，系统已支持识别。
+
+确保在 EdgeOne 控制台开启「回源时携带客户端 IP」功能。
+
+#### 阿里云 CDN/ESA
+
+在阿里云 CDN 控制台配置：
+
+1. 进入 **域名管理** -> **回源配置**
+2. 开启 **回源携带客户端真实 IP**
+3. 选择请求头名称为 `Ali-CDN-Real-IP`
+
+<Callout type="info" title="IP 识别优先级">
+  系统按以下顺序识别客户端 IP：`X-Forwarded-For` → `X-Real-IP` → `CF-Connecting-IP` → `EO-Connecting-IP` →
+  `Ali-CDN-Real-IP` → `RemoteAddr`
+</Callout>
 
 ## 邮件配置
 
