@@ -1,0 +1,230 @@
+---
+title: SSR 主题部署
+description: 学习如何部署 SSR 模式的 Next.js 主题
+date: 2026-01-25
+---
+
+## 什么是 SSR 主题
+
+SSR（Server-Side Rendering）主题是使用 Next.js 等现代前端框架开发的主题，它们具有以下特点：
+
+- **真正的服务端渲染**：页面在服务器端渲染，SEO 更友好
+- **React Server Components**：支持 React 服务端组件，数据获取更高效
+- **动态数据**：直接从后端 API 获取实时数据，无需预编译
+- **独立部署**：需要 Node.js 运行时，通过 Docker 容器化部署
+
+<Callout type="info" title="与传统主题的区别">
+传统主题（如 Vue 主题）是静态文件，直接嵌入到 Go 后端中。
+
+SSR 主题是独立的 Node.js 应用，需要通过 Docker 单独部署，与 Go 后端配合使用。
+
+</Callout>
+
+## 前置要求
+
+在部署 SSR 主题之前，请确保您的服务器已安装：
+
+- **Docker** 20.10+
+- **Docker Compose** v2.0+
+
+## 部署步骤
+
+### 1. 准备配置文件
+
+AnHeYu Pro 安装包中已包含 SSR 模式的 Docker Compose 配置文件：
+
+```bash
+# 进入 anheyu-pro 目录
+cd anheyu-pro
+
+# 确认 SSR 配置文件存在
+ls docker-compose.ssr.yml
+```
+
+<Callout type="info">
+  如果您的安装包中没有 `docker-compose.ssr.yml` 文件，请联系客服或从用户中心重新下载最新版本。
+</Callout>
+
+### 2. 配置环境变量
+
+创建或编辑 `.env` 文件，配置必要的环境变量：
+
+```bash
+# 数据库配置
+DB_HOST=postgres
+DB_PORT=5432
+DB_USER=anheyu
+DB_PASSWORD=your_secure_password
+DB_NAME=anheyu
+
+# Redis 配置
+REDIS_HOST=redis
+REDIS_PORT=6379
+
+# 缓存重新验证密钥（可选，默认为 anheyu-revalidate-secret）
+REVALIDATE_TOKEN=your_revalidate_secret
+```
+
+### 3. 启动服务
+
+使用 Docker Compose 启动所有服务：
+
+```bash
+docker compose -f docker-compose.ssr.yml up -d
+```
+
+这将启动以下服务：
+
+- **anheyu**：Go 后端 API 服务
+- **frontend**：Next.js SSR 前端服务
+- **postgres**：PostgreSQL 数据库
+- **redis**：Redis 缓存服务
+
+### 4. 验证部署
+
+服务启动后，访问 `http://your-server-ip:8091` 验证部署是否成功。
+
+- 前端页面：`http://your-server-ip:8091`
+- 后台管理：`http://your-server-ip:8091/login`
+- API 接口：`http://your-server-ip:8091/api/...`
+
+## Nginx 反向代理配置（推荐）
+
+在生产环境中，建议使用 Nginx 作为反向代理：
+
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+
+    # 重定向到 HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+
+    ssl_certificate /path/to/cert.pem;
+    ssl_certificate_key /path/to/key.pem;
+
+    location / {
+        proxy_pass http://127.0.0.1:8091;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+## 缓存管理
+
+SSR 主题支持智能缓存和按需重新验证：
+
+### 自动缓存清理
+
+当您在后台进行以下操作时，缓存会自动清理：
+
+- 发布/更新/删除文章
+- 修改网站配置
+- 更新分类/标签
+- 管理友情链接
+
+### 手动清理缓存
+
+如需手动清理缓存，可以调用管理 API：
+
+```bash
+# 清理所有缓存
+curl -X POST http://your-server:8091/api/admin/cache/revalidate \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"all": true}'
+
+# 清理特定文章缓存
+curl -X POST http://your-server:8091/api/admin/cache/revalidate \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"article": "article-slug"}'
+```
+
+## 切换回传统主题
+
+如果您想切换回传统主题：
+
+1. 停止 SSR 服务：
+
+```bash
+docker compose -f docker-compose.ssr.yml down
+```
+
+2. 使用传统的 Docker Compose 配置启动：
+
+```bash
+docker compose -f docker-compose.yml up -d
+```
+
+3. 在后台主题管理中启用您想要的传统主题。
+
+## 常见问题
+
+### Q: SSR 主题和传统主题有什么区别？
+
+**传统主题**：
+
+- 静态 HTML/CSS/JS 文件
+- 嵌入到 Go 后端
+- 通过后台一键安装
+- 需要重新部署才能更新
+
+**SSR 主题**：
+
+- 独立的 Node.js 应用
+- 使用 Docker 容器部署
+- 真正的服务端渲染
+- 支持热更新和实时数据
+
+### Q: 为什么 SSR 主题不能通过后台安装？
+
+SSR 主题需要 Node.js 运行时环境，无法像传统主题那样作为静态文件嵌入。它需要作为独立服务运行，因此必须通过 Docker 部署。
+
+### Q: 如何更新 SSR 主题？
+
+```bash
+# 拉取最新镜像
+docker compose -f docker-compose.ssr.yml pull frontend
+
+# 重启服务
+docker compose -f docker-compose.ssr.yml up -d frontend
+```
+
+### Q: 如何查看日志？
+
+```bash
+# 查看前端日志
+docker logs anheyu-frontend -f
+
+# 查看后端日志
+docker logs anheyu-backend -f
+```
+
+### Q: 内存占用如何？
+
+SSR 主题大约需要额外 100-200MB 内存用于 Node.js 运行时。总体资源需求：
+
+- Go 后端：约 50MB
+- Next.js 前端：约 150MB
+- PostgreSQL：约 100MB
+- Redis：约 50MB
+
+## 技术支持
+
+如果您在部署过程中遇到问题，可以通过以下方式获取帮助：
+
+- GitHub Issues：[anheyu-pro](https://github.com/anzhiyu-c/anheyu-pro/issues)
+- 官方文档：[docs.anheyu.com](https://docs.anheyu.com)
