@@ -34,7 +34,6 @@ import { Callout } from "fumadocs-ui/components/callout";
 - **页脚设置**：自定义页脚内容、运行时间显示等
 
 每个配置项都会显示：
-
 - **名称**：配置项的显示名称
 - **描述**：配置项的用途说明
 - **默认值**：主题预设的默认值
@@ -43,7 +42,9 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 修改配置后点击 **保存** 按钮，配置会立即生效。
 
-<Callout type="warning">配置保存后，可能需要刷新前端页面才能看到效果。如果使用了缓存，可能还需要清理缓存。</Callout>
+<Callout type="warning">
+配置保存后，可能需要刷新前端页面才能看到效果。如果使用了缓存，可能还需要清理缓存。
+</Callout>
 
 ## 主题配置定义（开发者）
 
@@ -75,38 +76,38 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 ### 配置分组（Group）
 
-| 字段     | 类型   | 必需 | 说明                       |
-| -------- | ------ | ---- | -------------------------- |
-| `group`  | string | ✅   | 分组标识，用于内部识别     |
-| `label`  | string | ✅   | 分组显示名称，展示在标签页 |
-| `fields` | array  | ✅   | 该分组下的配置字段列表     |
+| 字段    | 类型   | 必需 | 说明                       |
+| ------- | ------ | ---- | -------------------------- |
+| `group` | string | ✅   | 分组标识，用于内部识别     |
+| `label` | string | ✅   | 分组显示名称，展示在标签页 |
+| `fields`| array  | ✅   | 该分组下的配置字段列表     |
 
 ### 配置字段（Field）
 
-| 字段          | 类型   | 必需 | 说明                         |
-| ------------- | ------ | ---- | ---------------------------- |
-| `name`        | string | ✅   | 字段唯一标识，用于存储和读取 |
-| `label`       | string | ✅   | 字段显示名称                 |
-| `type`        | string | ✅   | 字段类型，见下方支持的类型   |
-| `default`     | any    | ❌   | 默认值                       |
-| `description` | string | ❌   | 字段描述，显示在输入框下方   |
-| `placeholder` | string | ❌   | 输入框占位文字               |
-| `validation`  | object | ❌   | 验证规则                     |
-| `options`     | array  | ❌   | 选项列表（select 类型必需）  |
-| `condition`   | object | ❌   | 显示条件，用于字段联动       |
+| 字段          | 类型   | 必需 | 说明                               |
+| ------------- | ------ | ---- | ---------------------------------- |
+| `name`        | string | ✅   | 字段唯一标识，用于存储和读取       |
+| `label`       | string | ✅   | 字段显示名称                       |
+| `type`        | string | ✅   | 字段类型，见下方支持的类型         |
+| `default`     | any    | ❌   | 默认值                             |
+| `description` | string | ❌   | 字段描述，显示在输入框下方         |
+| `placeholder` | string | ❌   | 输入框占位文字                     |
+| `validation`  | object | ❌   | 验证规则                           |
+| `options`     | array  | ❌   | 选项列表（select 类型必需）        |
+| `condition`   | object | ❌   | 显示条件，用于字段联动             |
 
 ### 支持的字段类型
 
-| 类型       | 说明         | 示例值              |
-| ---------- | ------------ | ------------------- |
-| `text`     | 单行文本输入 | `"Hello World"`     |
-| `textarea` | 多行文本输入 | `"多行\n文本"`      |
-| `number`   | 数字输入     | `10`                |
-| `select`   | 下拉选择     | `"option1"`         |
-| `color`    | 颜色选择器   | `"#3b82f6"`         |
-| `switch`   | 开关         | `true` / `false`    |
-| `image`    | 图片上传/URL | `"https://..."`     |
-| `code`     | 代码编辑器   | `"<div>HTML</div>"` |
+| 类型       | 说明                   | 示例值                    |
+| ---------- | ---------------------- | ------------------------- |
+| `text`     | 单行文本输入           | `"Hello World"`           |
+| `textarea` | 多行文本输入           | `"多行\n文本"`            |
+| `number`   | 数字输入               | `10`                      |
+| `select`   | 下拉选择               | `"option1"`               |
+| `color`    | 颜色选择器             | `"#3b82f6"`               |
+| `switch`   | 开关                   | `true` / `false`          |
+| `image`    | 图片上传/URL           | `"https://..."`           |
+| `code`     | 代码编辑器             | `"<div>HTML</div>"`       |
 
 ### 字段类型详细示例
 
@@ -236,13 +237,13 @@ import { Callout } from "fumadocs-ui/components/callout";
 
 支持的操作符：
 
-| 操作符     | 说明   |
-| ---------- | ------ |
-| `eq`       | 等于   |
-| `neq`      | 不等于 |
-| `gt`       | 大于   |
-| `lt`       | 小于   |
-| `contains` | 包含   |
+| 操作符     | 说明     |
+| ---------- | -------- |
+| `eq`       | 等于     |
+| `neq`      | 不等于   |
+| `gt`       | 大于     |
+| `lt`       | 小于     |
+| `contains` | 包含     |
 
 ## 在主题中读取配置
 
@@ -284,9 +285,9 @@ export async function getThemeConfig() {
 // app/layout.tsx
 export default async function RootLayout({ children }) {
   const themeConfig = await getThemeConfig();
-
+  
   return (
-    <html style={{ "--primary-color": themeConfig.primaryColor }}>
+    <html style={{ '--primary-color': themeConfig.primaryColor }}>
       <body>{children}</body>
     </html>
   );
@@ -395,7 +396,6 @@ export default async function RootLayout({ children }) {
 ### Q: 配置修改后前端没有生效？
 
 可能的原因：
-
 - 前端页面有缓存，尝试强制刷新（Ctrl+F5）
 - 如果是 SSR 主题，可能需要等待缓存过期或手动清理缓存
 
