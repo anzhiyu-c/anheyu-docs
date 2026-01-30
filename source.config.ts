@@ -6,6 +6,7 @@
  * @LastEditors: 安知鱼
  */
 import { defineConfig, defineDocs, frontmatterSchema } from "fumadocs-mdx/config";
+import lastModified from "fumadocs-mdx/plugins/last-modified";
 import { z } from "zod";
 
 export const docs = defineDocs({
@@ -19,7 +20,7 @@ export const docs = defineDocs({
 });
 
 export default defineConfig({
-  lastModifiedTime: "git", // 启用 Git 最后修改时间
+  plugins: [lastModified()], // 启用 Git 最后修改时间
   mdxOptions: {
     // MDX options
   },

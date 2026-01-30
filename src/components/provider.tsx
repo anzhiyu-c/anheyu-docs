@@ -3,7 +3,7 @@
  * @Author: 安知鱼
  */
 "use client";
-import { RootProvider } from "fumadocs-ui/provider";
+import { RootProvider } from "fumadocs-ui/provider/next";
 import StaticSearchDialog from "@/components/search";
 import type { ReactNode } from "react";
 
