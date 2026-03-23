@@ -4,19 +4,22 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@orama/orama': 3.1.18
+
 importers:
 
   .:
     dependencies:
       '@orama/orama':
-        specifier: ^3.1.14
-        version: 3.1.14
+        specifier: 3.1.18
+        version: 3.1.18
       '@orama/stopwords':
-        specifier: ^3.1.13
-        version: 3.1.13
+        specifier: 3.1.18
+        version: 3.1.18
       '@orama/tokenizers':
-        specifier: ^3.1.13
-        version: 3.1.13
+        specifier: 3.1.18
+        version: 3.1.18
       fumadocs-core:
         specifier: ^16.4.4
         version: 16.7.2(@mdx-js/mdx@3.1.1)(@types/estree-jsx@1.0.5)(@types/hast@3.0.4)(@types/mdast@4.0.4)(@types/react@19.1.13)(lucide-react@0.577.0(react@19.1.1))(next@16.2.1(@babel/core@7.29.0)(react-dom@19.1.1(react@19.1.1))(react@19.1.1))(react-dom@19.1.1(react@19.1.1))(react@19.1.1)(zod@4.1.8)
@@ -657,24 +660,16 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  '@orama/orama@3.1.13':
-    resolution: {integrity: sha512-O0hdKt4K31i8fpq8Bw5RfdPVAqm0EdduBUcluPo2MRcfCOwUEf5JlnvRhf/J0ezOYOD8jQ/LumYZxOVi/XK/BA==}
-    engines: {node: '>= 20.0.0'}
-
-  '@orama/orama@3.1.14':
-    resolution: {integrity: sha512-Iq4RxYC7y0pA/hLgcUGpYYs5Vze4qNmJk0Qi1uIrg2bHGpm6A06nbjWcH9h4HQsddkDFFlanLj/zYBH3Sxdb4w==}
-    engines: {node: '>= 20.0.0'}
-
   '@orama/orama@3.1.18':
     resolution: {integrity: sha512-a61ljmRVVyG5MC/698C8/FfFDw5a8LOIvyOLW5fztgUXqUpc1jOfQzOitSCbge657OgXXThmY3Tk8fpiDb4UcA==}
     engines: {node: '>= 20.0.0'}
 
-  '@orama/stopwords@3.1.13':
-    resolution: {integrity: sha512-+hQUIfluBJemXirxqls+HKWENnhkpsJql8owFKpuJoBJHYztnrCG0Jrshyo4EMVGmSoMTAsV6DHfTIthNnso7A==}
+  '@orama/stopwords@3.1.18':
+    resolution: {integrity: sha512-W8V7m7RnCme+99OmKl/xs5rf6OUhFpr0aPGVmPrXzTLSg4ZqSbRY2euS2S/lgjjYi/0NhEWqwoq8nDY6Ihx4EA==}
     engines: {node: '>= 20.0.0'}
 
-  '@orama/tokenizers@3.1.13':
-    resolution: {integrity: sha512-xGMlS4JyFulH9gOOnT7xygyX/6mtITOfjPRH2pvDyJBcBIZMUdmJ4VQpb59dxloMRv8Tfj8bcKkzhspkrcJ9Sw==}
+  '@orama/tokenizers@3.1.18':
+    resolution: {integrity: sha512-Ra4dFddWZ7hCGPAehnd/6QZjlzQvczYSt1y1Fq4HteJqRu2yvfR6fXvxiUnKi+HIgJYPxKhebJEjvJdF8LYQWg==}
     engines: {node: '>= 20.0.0'}
 
   '@radix-ui/number@1.1.1':
@@ -3876,17 +3871,13 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@orama/orama@3.1.13': {}
-
-  '@orama/orama@3.1.14': {}
-
   '@orama/orama@3.1.18': {}
 
-  '@orama/stopwords@3.1.13': {}
+  '@orama/stopwords@3.1.18': {}
 
-  '@orama/tokenizers@3.1.13':
+  '@orama/tokenizers@3.1.18':
     dependencies:
-      '@orama/orama': 3.1.13
+      '@orama/orama': 3.1.18
 
   '@radix-ui/number@1.1.1': {}
 

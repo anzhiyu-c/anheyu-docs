@@ -20,6 +20,7 @@ import { create } from "@orama/orama";
 import { createTokenizer } from "@orama/tokenizers/mandarin";
 import { stopwords as mandarinStopwords } from "@orama/stopwords/mandarin";
 
+/** 与 fumadocs `useDocsSearch({ type: 'static' })` 的 `initOrama` 约定一致；@orama/* 需与 fumadocs 依赖的 @orama/orama 同版本，避免两套类型。 */
 function initOrama(locale?: string) {
   return create({
     schema: { _: "string" },
