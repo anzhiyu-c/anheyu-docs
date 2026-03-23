@@ -32,13 +32,28 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 文档: 📖 [AnHeYu Docs](https://dev.anheyu.com)
 
+### 从源码克隆（开发者）
+
+Next.js 前台位于 **`frontend` Git 子模块**，克隆时需一并拉取：
+
+```bash
+git clone --recurse-submodules https://github.com/anzhiyu-c/anheyu-app.git
+cd anheyu-app
+```
+
+若已克隆但 `frontend` 为空：
+
+```bash
+git submodule update --init --recursive
+```
+
 ## 🚀 快速开始
 
-`安和鱼应用系统`是一个基于 **[Go](https://go.dev/) + [Vue3](https://vuejs.org/)** 构建的现代化内容管理与分享平台。系统采用前后端分离架构，后端使用 Go 语言提供高性能的 API 服务。
+`安和鱼应用系统`是一个基于 **[Go](https://go.dev/) + [Next.js](https://nextjs.org/)（[React](https://react.dev/) + TypeScript）** 构建的现代化内容管理与分享平台。前台为 Next.js SSR/应用路由，后端使用 Go 提供高性能 API，二者通过反向代理协同部署。
 
 [Anheyu](https://github.com/anzhiyu-c/anheyu-app) 可以让你快速的搭建一个属于自己的内容网站，你可以用它来记录你的生活、学习、工作、娱乐等任意内容，并且随时查看，它支持公网部署，也支持本地私有部署。
 
-如果你有开发经验，或者你是一名想学习前端的同学，那么这个项目非常的适合你进行学习，你可以学习 Vue3、TypeScript 等技术来自定义专属于你的主题，如果你愿意，也可以通过邮箱联系我提交到主题商城，我会将其集成到项目中，通过审核后，所有的 Anheyu 用户都可以自由下载并使用您的主题。
+如果你有开发经验，或者你是一名想学习前端的同学，那么这个项目非常的适合你进行学习，你可以学习 React、Next.js、TypeScript 等技术来自定义专属于你的主题，如果你愿意，也可以通过邮箱联系我提交到主题商城，我会将其集成到项目中，通过审核后，所有的 Anheyu 用户都可以自由下载并使用您的主题。
 
 ### 系统要求
 
@@ -126,7 +141,7 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ## 🏗️ 技术架构
 
-Go + Vue3 + Ent
+Go + Next.js（React）+ Ent
 
 ### 为什么选择这些技术？
 
@@ -138,12 +153,12 @@ Go + Vue3 + Ent
 - 支持多线程、并发、异步、协程
 - 相比 Java 内存占用更小，相比 Rust 生态更成熟
 
-**为什么选择 Vue3 作为前端？**
+**为什么选择 Next.js（React）作为前端？**
 
-- Vue3 的性能和效率出色，生态系统成熟
-- Composition API 非常适合编写复杂的交互逻辑
-- 相比 React，Vue 的 CSS 处理更加灵活
-- Vue 更易上手，有利于生态建设和主题开发者参与
+- App Router 与 SSR/流式渲染有利于 SEO 与首屏体验
+- React 生态成熟，便于集成富文本（Tiptap）、数据请求（TanStack Query）等能力
+- 与 Go 后端通过反向代理统一部署，生产环境可使用 `standalone` 输出
+- TypeScript 覆盖全栈类型，利于主题与二次开发维护
 
 ## 🤝 贡献指南
 

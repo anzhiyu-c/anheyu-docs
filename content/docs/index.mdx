@@ -80,7 +80,7 @@ date: 2025-09-14
 
 [Anheyu](https://github.com/anzhiyu-c/anheyu-app) 可以让你快速的搭建一个属于自己的内容网站，你可以用它来记录你的生活、学习、工作、娱乐等任意内容，并且随时查看，它支持公网部署，也支持本地私有部署。
 
-如果你有开发经验，或者你是一名想学习前端的同学，那么这个项目非常的适合你进行学习，你可以学习 Vue3、TypeScript 等技术来自定义专属于你的主题，如果你愿意，也可以通过邮箱联系我提交到主题商城，我会将其集成到项目中，通过审核后，所有的 Anheyu 用户都可以自由下载并使用您的主题。
+如果你有开发经验，或者你是一名想学习前端的同学，那么这个项目非常的适合你进行学习，你可以学习 React、Next.js、TypeScript 等技术来自定义专属于你的主题，如果你愿意，也可以通过邮箱联系我提交到主题商城，我会将其集成到项目中，通过审核后，所有的 Anheyu 用户都可以自由下载并使用您的主题。
 
 由 [安知鱼](https://github.com/anzhiyu-c) 负责开发与维护。
 
@@ -92,7 +92,7 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
 
 ## 🚀 快速开始
 
-`安和鱼应用系统`是一个基于 **[Go](https://go.dev/) + [Vue3](https://vuejs.org/)** 构建的现代化内容管理与分享平台。系统采用前后端分离架构，后端使用 Go 语言提供高性能的 API 服务。
+`安和鱼应用系统`是一个基于 **[Go](https://go.dev/) + [Next.js](https://nextjs.org/)（[React](https://react.dev/) + TypeScript）** 构建的现代化内容管理与分享平台。前台为 Next.js SSR/应用路由，后端使用 Go 提供高性能 API，二者通过反向代理协同部署。
 
 <Callout type="info" title="系统要求">
   在开始之前，请确保您的系统满足以下要求： 内存大于等于512MB，硬盘大于等于1GB，CPU大于等于1核。
@@ -182,12 +182,11 @@ GitHub: https://github.com/anzhiyu-c/anheyu-app
     编译速度非常快，支持多平台编译，支持静态编译，开箱即用 - 支持多线程，支持并发，支持异步，支持协程 -
     Java内存占用过大，Go有许多好用的标准库，Rust相对较少，当我需要一个功能的时候，我可以使用Go快速实现，Go的性能表现已经足够。
   </Accordion>
-  <Accordion title="为什么选择使用Vue3作为前端？而不是React/Nuxt.js/Next.js">
- - Vue3的性能和效率非常出色，Vue3的生态系统非常成熟，有很多优秀的库和工具可以使用。
- - 我需要写大量的动画，我不喜欢写内链样式，Vue3的 Composition API 非常适合我，但是React的CSS写的我很累，虽然同样支持CSS in JS，但是React的CSS in JS写的我很累。
- - Nuxt与Next等最大的优势是支持SSR，但是我的后端已经使用Go的静态嵌入实现了SSR，已经有了非常优秀的 SEO 能力。
- - 为什么官网却使用Next.js？因为官网需要非常优秀的 SEO 能力，并且系统不大，Next.js的 SEO 能力非常出色。
- - 我希望能有更多的人能够通过本项目学习到编程开发，Vue更易上手，这有利于后续集成主题开发者以及生态。
+  <Accordion title="为什么选择 Next.js（React）作为前台？">
+ - 主站前台已采用 **Next.js App Router**，配合 **SSR** 与流式渲染，有利于 SEO 与首屏体验。
+ - **React** 生态成熟，便于集成富文本（Tiptap）、数据请求（TanStack Query）等能力，与当前 `frontend` 实现一致。
+ - 与 **Go** 后端通过 **反向代理** 统一部署（开发环境也可代理到本地后端），运维路径清晰。
+ - 使用 **TypeScript** 贯穿全栈类型，利于主题定制与二次开发维护。
   </Accordion>
 
   <Accordion title="支持哪些数据库？">

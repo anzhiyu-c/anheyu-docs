@@ -24,16 +24,13 @@ const hello: string = "Hello World";
 console.log(hello);
 ```
 
-== tab Vue
+== tab React
 
-```vue
-<template>
-  <div>{{ hello }}</div>
-</template>
-
-<script setup>
-const hello = "Hello World";
-</script>
+```tsx
+export function Hello() {
+  const hello = "Hello World";
+  return <div>{hello}</div>;
+}
 ```
 
 :::
@@ -667,21 +664,23 @@ I have a dream that one day this nation will rise up.~[2]~
 
 ## 🦊 块级代码
 
-```js
-import { ref } from "vue";
-import { MdEditor } from "md-editor-v3";
-import "md-editor-v3/lib/style.css";
+```tsx
+import { useState } from "react";
 
-const text = ref("Hello Editor!");
+export function EditorDemo() {
+  const [text, setText] = useState("Hello Editor!");
+  return <pre>{text}</pre>;
+}
 ```
 
 ````markdown
-```js
-import { ref } from "vue";
-import { MdEditor } from "md-editor-v3";
-import "md-editor-v3/lib/style.css";
+```tsx
+import { useState } from "react";
 
-const text = ref("Hello Editor!");
+export function EditorDemo() {
+  const [text, setText] = useState("Hello Editor!");
+  return <pre>{text}</pre>;
+}
 ```
 ````
 
