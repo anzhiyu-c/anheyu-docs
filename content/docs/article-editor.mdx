@@ -796,48 +796,34 @@ gitGraph
 ```
 ````
 
-## 🙈 提示
+## 提示块（Note / Tip / Warning / Danger）
 
 ![提示](https://upload-bbs.miyoushe.com/upload/2025/09/15/125766904/d682221493e99e64e9c9d2416b6812d3_3189737305022767468.png?x-oss-process=image/format,avif)
 
+块级提示框以 `!!!` 开头并紧跟类型名（中间可空格），以单独一行的 `!!!` 结束。AnHeYu 编辑器与正文解析仅支持以下四种类型：`note`、`tip`、`warning`、`danger`。旧版 `:::type` ... `:::` 仍可渲染，**新建内容请使用 `!!!` 语法**。
+
 ```markdown
-!!! note 支持的类型
+!!! note 注意
 
-note、abstract、info、tip、success、question、warning
-
-failure、danger、bug、example、quote、hint、caution、error、attention
+这是「注意」样式，用于一般说明。
 
 !!!
 
-!!! success Title
+!!! tip 提示
+
+这是「提示」样式。
 
 !!!
 
-!!! bug Title
+!!! warning 警告
+
+这是「警告」样式。
 
 !!!
 
-!!! abstract Title
+!!! danger 危险
 
-!!!
-
-!!! attention Title
-
-!!!
-
-!!! caution Title
-
-!!!
-
-!!! danger Title
-
-!!!
-
-!!! error Title
-
-!!!
-
-!!! example Title
+这是「危险」样式。
 
 !!!
 ```
