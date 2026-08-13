@@ -1,0 +1,420 @@
+---
+title: 插件开发
+description: 安知鱼插件系统开发指南，包括插件架构、快速开始、manifest 规范、事件参考与 SDK API
+date: 2026-08-13
+---
+
+import { Callout } from "fumadocs-ui/components/callout";
+
+安知鱼支持通过插件进行二次开发。插件是独立的可执行程序，由主程序在运行时启动并通过 RPC 通信，可以为站点扩展搜索引擎、订阅站点事件（文章发布、评论创建等）实现通知推送、数据同步等能力。
+
+本文面向插件开发者，介绍如何从零开发、打包和发布一个插件。
+
+## 🏗️ 架构概览
+
+插件系统基于 [HashiCorp go-plugin](https://github.com/hashicorp/go-plugin) 构建：
+
+- **进程隔离**：每个插件是独立进程，插件崩溃不会影响主程序；
+- **RPC 通信**：主程序通过本地 RPC 调用插件提供的能力接口；
+- **热加载**：插件目录被实时监听，安装、更新、移除即时生效，无需重启主程序；
+- **健康检查**：主程序每 60 秒检查插件健康状态，异常时自动重启；
+- **配置下发**：管理后台保存的插件配置在插件进程启动时通过环境变量注入。
+
+```
+┌────────────────────────────────────────────┐
+│ 安知鱼主程序                                │
+│  ┌──────────────┐    RPC     ┌───────────┐ │
+│  │ 插件管理器    │◄──────────►│ 插件进程 A │ │
+│  │ （发现/加载/  │            └───────────┘ │
+│  │  热重载/健康） │    RPC     ┌───────────┐ │
+│  │              │◄──────────►│ 插件进程 B │ │
+│  └──────────────┘            └───────────┘ │
+└────────────────────────────────────────────┘
+```
+
+### 插件类型
+
+当前支持两种能力类型，一个插件可以同时实现多种：
+
+| 类型        | 接口               | 用途                                       |
+| ----------- | ------------------ | ------------------------------------------ |
+| `searcher`  | `model.Searcher`   | 提供全文搜索引擎（如官方 Meilisearch 插件） |
+| `eventhook` | `plugin.EventHook` | 订阅站点事件，实现通知、同步等二次开发场景 |
+
+<Callout title="语言要求">
+  插件通过 Go SDK 开发。协议层面其他语言也可实现，但官方目前只提供 Go SDK。
+</Callout>
+
+## 🚀 快速开始：编写一个事件钩子插件
+
+下面从零实现一个插件：文章发布时把事件推送到控制台日志。完成后你将得到一个可上传安装的插件包。
+
+### 1. 初始化项目
+
+```bash
+mkdir my-notifier && cd my-notifier
+go mod init github.com/yourname/my-notifier
+go get github.com/anzhiyu-c/anheyu-app@latest
+```
+
+### 2. 编写 main.go
+
+```go
+package main
+
+import (
+	"context"
+	"log"
+
+	"github.com/anzhiyu-c/anheyu-app/pkg/plugin"
+	"github.com/anzhiyu-c/anheyu-app/pkg/plugin/sdk"
+)
+
+// MyHook 实现 plugin.EventHook 接口
+type MyHook struct{}
+
+// Subscriptions 声明订阅的事件，"*" 表示全部事件
+func (h *MyHook) Subscriptions() []string {
+	return []string{plugin.EventArticlePublished}
+}
+
+// OnEvent 处理事件；返回的错误只会被记录日志，不影响主程序业务
+func (h *MyHook) OnEvent(ctx context.Context, event plugin.Event) error {
+	log.Printf("收到事件 %s，负载: %s", event.Name, string(event.Payload))
+	return nil
+}
+
+func main() {
+	sdk.Serve(sdk.Options{
+		Metadata: plugin.Metadata{
+			ID:          "my-notifier",
+			Name:        "我的通知插件",
+			Version:     "1.0.0",
+			Description: "文章发布时打印日志",
+			Author:      "你的名字",
+		},
+		EventHook: &MyHook{},
+	})
+}
+```
+
+<Callout title="日志输出">
+  插件进程的标准输出/错误会被主程序捕获并打印到主程序日志中，直接使用 `log` 包即可调试。
+</Callout>
+
+### 3. 编写 plugin.json
+
+在项目根目录创建 `plugin.json`：
+
+```json
+{
+  "manifest_version": 1,
+  "id": "my-notifier",
+  "name": "我的通知插件",
+  "version": "1.0.0",
+  "description": "文章发布时打印日志",
+  "author": "你的名字",
+  "types": ["eventhook"],
+  "entry": {
+    "linux-amd64": "bin/my-notifier-linux-amd64",
+    "darwin-arm64": "bin/my-notifier-darwin-arm64",
+    "windows-amd64": "bin/my-notifier-windows-amd64.exe"
+  }
+}
+```
+
+### 4. 构建与打包
+
+```bash
+# 按目标平台交叉编译（至少提供站点服务器对应平台的二进制）
+GOOS=linux GOARCH=amd64 go build -o bin/my-notifier-linux-amd64 .
+GOOS=darwin GOARCH=arm64 go build -o bin/my-notifier-darwin-arm64 .
+GOOS=windows GOARCH=amd64 go build -o bin/my-notifier-windows-amd64.exe .
+
+# 打包为插件安装包（plugin.json 必须位于 zip 根目录）
+zip -r my-notifier.zip plugin.json bin/
+```
+
+### 5. 安装验证
+
+在管理后台「插件管理」页点击「安装插件」上传 `my-notifier.zip`，插件状态变为「运行中」后发布一篇文章，主程序日志中即可看到插件打印的事件内容。
+
+## 📄 manifest 规范（plugin.json）
+
+安装包根目录必须包含 `plugin.json`：
+
+| 字段               | 类型     | 必需 | 说明                                                                 |
+| ------------------ | -------- | ---- | -------------------------------------------------------------------- |
+| `manifest_version` | number   | ✅   | 固定为 `1`                                                            |
+| `id`               | string   | ✅   | 插件唯一标识，2-64 位小写字母/数字/中划线/下划线，以字母或数字开头     |
+| `name`             | string   | ✅   | 插件显示名称                                                          |
+| `version`          | string   | ✅   | 插件版本，建议遵循语义化版本                                          |
+| `types`            | string[] | ✅   | 能力类型声明：`searcher`、`eventhook`（实际能力以运行时探测为准）      |
+| `entry`            | object   | ✅   | 平台标识到包内二进制相对路径的映射，至少一个平台                       |
+| `description`      | string   |      | 插件描述                                                              |
+| `author`           | string   |      | 作者                                                                  |
+| `homepage`         | string   |      | 主页或仓库地址                                                        |
+| `min_app_version`  | string   |      | 要求的最低主程序版本（提示用途）                                       |
+| `config_schema`    | array    |      | 配置项声明，管理后台按此渲染配置表单                                   |
+
+### 平台标识
+
+`entry` 的键为 `GOOS-GOARCH` 组合，常用值：
+
+- `linux-amd64`、`linux-arm64`
+- `darwin-amd64`、`darwin-arm64`
+- `windows-amd64`
+
+安装时主程序按自身运行平台选择对应二进制，缺少当前平台的安装包会被拒绝。
+
+### 配置项声明（config_schema）
+
+```json
+{
+  "config_schema": [
+    {
+      "key": "webhook_url",
+      "label": "Webhook 地址",
+      "type": "string",
+      "required": true,
+      "secret": false,
+      "default": "",
+      "description": "接收事件 POST 请求的完整 URL"
+    },
+    {
+      "key": "mode",
+      "label": "推送模式",
+      "type": "select",
+      "options": ["all", "digest"],
+      "default": "all"
+    }
+  ]
+}
+```
+
+| 字段          | 说明                                                        |
+| ------------- | ----------------------------------------------------------- |
+| `key`         | 配置键，将以环境变量形式注入插件进程                          |
+| `label`       | 管理后台表单显示名称                                          |
+| `type`        | `string` / `number` / `boolean` / `select`                   |
+| `required`    | 必填项，保存配置时校验                                        |
+| `secret`      | 敏感项，管理后台使用密码输入框                                |
+| `default`     | 默认值（字符串形式）                                          |
+| `description` | 表单项描述                                                    |
+| `options`     | 仅 `select` 类型：可选值列表                                  |
+
+## ⚙️ 配置注入机制
+
+管理后台保存的插件配置在插件进程启动时通过环境变量注入：
+
+- `ANHEYU_PLUGIN_CONFIG`：完整配置的 JSON（`{"webhook_url": "https://..."}`）；
+- `ANHEYU_PLUGIN_CONFIG_<KEY>`：逐项注入，键名大写、非字母数字字符转下划线（如 `webhook_url` → `ANHEYU_PLUGIN_CONFIG_WEBHOOK_URL`）。
+
+使用 SDK 读取配置：
+
+```go
+cfg := sdk.LoadConfig()
+
+url := cfg.String("webhook_url")                  // 字符串，缺失返回 ""
+mode := cfg.StringDefault("mode", "all")          // 带默认值
+limit := cfg.Int("limit", 10)                     // 整数，解析失败返回默认值
+enabled := cfg.Bool("enabled", true)              // 布尔（true/1/yes/on）
+```
+
+管理后台修改配置后，运行中的插件会**自动重载**使新配置生效。
+
+<Callout type="warn" title="仅目录式插件支持配置下发">
+  直接把裸二进制放入 `data/plugins/`
+  根目录的旧式安装方式不支持配置下发，插件只能读取主程序进程的环境变量。需要配置能力时请使用 zip 安装包（目录式插件）。
+</Callout>
+
+## 📡 事件参考（eventhook）
+
+### 事件信封
+
+插件的 `OnEvent` 收到的事件结构：
+
+```json
+{
+  "name": "article.published",
+  "occurred_at": "2026-08-13T14:00:00+08:00",
+  "payload": {}
+}
+```
+
+`payload` 为 JSON 原文（`json.RawMessage`），字段结构随事件类型而不同。
+
+### 事件清单
+
+| 事件名              | 触发时机                             |
+| ------------------- | ------------------------------------ |
+| `article.created`   | 文章创建（含草稿）                   |
+| `article.published` | 文章从非发布状态变为发布（含新建即发布） |
+| `article.updated`   | 文章更新                             |
+| `article.deleted`   | 文章删除                             |
+| `comment.created`   | 评论创建（含待审核评论）             |
+
+订阅通配符 `*` 表示接收全部事件；`Subscriptions()` 返回空列表时同样视为接收全部事件。
+
+### 文章事件负载
+
+`article.*` 事件的 payload：
+
+```json
+{
+  "id": "文章公共 ID",
+  "slug": "文章缩略名（可能为空）",
+  "title": "文章标题",
+  "url": "/posts/文章缩略名或ID"
+}
+```
+
+<Callout title="注意">
+  `url` 为站内相对路径，按文章页规则拼接；文档模式文章的实际访问路径可能为 `/doc/` 前缀。删除事件的 `title`
+  为删除前捕获的标题。定时发布的文章目前不触发 `article.published` 事件。
+</Callout>
+
+### 评论事件负载
+
+`comment.created` 事件的 payload：
+
+```json
+{
+  "id": 123,
+  "target_path": "/posts/example",
+  "target_title": "示例文章",
+  "nickname": "评论者昵称",
+  "content": "评论内容",
+  "is_published": true,
+  "is_admin": false
+}
+```
+
+`is_published` 为 `false` 表示评论进入待审核状态。
+
+## 🔍 搜索引擎插件（searcher）
+
+实现 `model.Searcher` 接口即可接管站点全文搜索（优先级高于内置的 Redis/简单搜索）：
+
+```go
+type Searcher interface {
+	Search(ctx context.Context, query string, page int, size int) (*SearchResult, error)
+	IndexArticle(ctx context.Context, article *Article) error
+	DeleteArticle(ctx context.Context, articleID string) error
+	ClearAllDocuments(ctx context.Context) error
+	HealthCheck(ctx context.Context) error
+}
+```
+
+通过 SDK 注册：
+
+```go
+sdk.Serve(sdk.Options{
+	Metadata: plugin.Metadata{ID: "my-search", Name: "我的搜索引擎", Version: "1.0.0"},
+	Searcher: mySearcher, // 实现 model.Searcher
+})
+```
+
+完整实现可参考官方 Meilisearch 插件源码：`anheyu-app/pkg/plugin/meilisearch`。
+
+<Callout title="健康检查">
+  提供 searcher 能力的插件通过 `HealthCheck` 做健康检查；纯事件钩子插件则检查进程存活状态。健康检查失败会触发自动重启。
+</Callout>
+
+## 🧰 SDK API 参考
+
+SDK 包路径：`github.com/anzhiyu-c/anheyu-app/pkg/plugin/sdk`
+
+### sdk.Serve(opts sdk.Options)
+
+启动插件并阻塞运行，须在 `main` 中调用。自动完成 go-plugin 握手、能力注册与元信息包装。
+
+```go
+type Options struct {
+	Metadata  plugin.Metadata  // 必填：ID、Name、Version
+	Searcher  model.Searcher   // 可选：搜索引擎能力
+	EventHook plugin.EventHook // 可选：事件钩子能力
+}
+```
+
+至少提供一种能力实现；两种能力可同时提供（一个插件二进制同时是搜索引擎和事件钩子）。
+
+### plugin.Metadata
+
+```go
+type Metadata struct {
+	ID          string // 插件唯一标识（与 plugin.json 的 id 保持一致）
+	Name        string // 显示名称
+	Version     string // 版本
+	Description string // 描述
+	Author      string // 作者
+	Homepage    string // 主页
+}
+```
+
+<Callout title="元信息优先级">
+  目录式插件的展示信息以 `plugin.json` 为准；`sdk.Serve` 中的 Metadata
+  用于旧式裸二进制场景与运行时兜底，两处保持一致即可。
+</Callout>
+
+### plugin.EventHook
+
+```go
+type EventHook interface {
+	Subscriptions() []string
+	OnEvent(ctx context.Context, event plugin.Event) error
+}
+```
+
+只想用一个函数快速实现（订阅全部事件）时可用 `sdk.EventHandlerFunc`：
+
+```go
+sdk.Serve(sdk.Options{
+	Metadata:  meta,
+	EventHook: sdk.EventHandlerFunc(func(ctx context.Context, e plugin.Event) error {
+		// 处理事件
+		return nil
+	}),
+})
+```
+
+### sdk.LoadConfig() / sdk.Config
+
+见上文「配置注入机制」。
+
+## 📦 打包与发布规范
+
+插件安装包为 zip 文件，结构如下：
+
+```
+my-plugin.zip
+├── plugin.json                       # manifest（必需，位于根目录）
+├── bin/
+│   ├── my-plugin-linux-amd64         # 各平台二进制（至少一个）
+│   ├── my-plugin-darwin-arm64
+│   └── my-plugin-windows-amd64.exe
+└── README.md                         # 说明文档（推荐）
+```
+
+要求与限制：
+
+- `plugin.json` 必须位于 zip 根目录；
+- 安装包大小不超过 100MB，解压后不超过 512MB，文件数量不超过 1000；
+- 包内路径不允许绝对路径或 `..` 逃逸（安装时校验）；
+- 二进制建议按 `<插件id>-<GOOS>-<GOARCH>` 命名并放入 `bin/` 目录；
+- 同 `id` 重复安装视为升级：旧文件被替换，已保存的配置与禁用状态保留。
+
+## 🐛 调试技巧
+
+- **本地快速迭代**：把编译产物直接覆盖到 `data/plugins/<id>/bin/` 下对应二进制，然后在管理后台点「重新加载」；或使用旧式方式将裸二进制放到 `data/plugins/` 根目录，文件写入会自动触发热重载。
+- **查看日志**：插件的 stdout/stderr 会写入主程序日志，事件处理失败的错误也会以 `[Plugin]` 前缀记录。
+- **常见错误**：
+  - `插件未实现任何已知能力接口`：`sdk.Serve` 未提供 Searcher/EventHook，或使用了不匹配的握手配置（请使用 SDK 而不是自行调用 go-plugin）；
+  - `插件不支持当前平台`：`plugin.json` 的 `entry` 缺少服务器平台对应的二进制；
+  - 配置读不到：确认插件以目录式安装（zip 上传），配置修改后插件已自动重载。
+
+## 🔒 安全边界
+
+<Callout type="warn" title="重要">
+  插件以独立进程运行，拥有与主程序相同的系统权限。主程序不提供沙箱隔离，管理接口仅限管理员调用。作为开发者请勿在插件中收集敏感数据；作为站长请只安装可信来源的插件。
+</Callout>
